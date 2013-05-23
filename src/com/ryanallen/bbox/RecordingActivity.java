@@ -1,15 +1,25 @@
 package com.ryanallen.bbox;
 
+import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import android.app.Activity;
 import android.gesture.Prediction;
 import android.hardware.Camera;
+import android.media.CamcorderProfile;
+import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ToggleButton;
 
 import com.ryanallen.bbox.util.SystemUiHider;
 
@@ -20,86 +30,85 @@ import com.ryanallen.bbox.util.SystemUiHider;
  * @see SystemUiHider
  */
 public class RecordingActivity extends Activity {
-	
 	private Camera myCamera;
-//	private SurfaceView cameraView;
 	private CameraPreview mPreview;
 	private FrameLayout mFrameLayoutPreview;
+	private MediaRecorder mMediaRecorder;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_recording);
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
 		
+		// Get the Camera instance as the activity achieves full user focus
+	    if (myCamera == null) {
+	        initializeCamera(); // Local method to handle camera init
+	    }
+	}
+	
+	private boolean initializeCamera() {
 		// create an instance of camera
 		myCamera = getCameraInstance();
 		
-		mPreview = new CameraPreview(this, myCamera);
-		mFrameLayoutPreview = (FrameLayout)findViewById(R.id.camera_preview);
-		mFrameLayoutPreview.addView(mPreview);
+		if (myCamera == null) return false;
 		
-//		myCamera = Camera.open();
-//		// get existing default paramaters
-//		Camera.Parameters cameraParameters = myCamera.getParameters();
-//		
-//		// modify the paramaters, if desired
-//		
-//		// set the new paramaters
-//		myCamera.setParameters(cameraParameters);
-//		
-//		// get the surface view for the camera preview
-//		//cameraView = (SurfaceView) findViewById(R.id.cameraView);
-//		
-//		SurfaceHolder holder = cameraView.getHolder();
-//		holder.addCallback(new Callback() {
-//			
-//			@Override
-//			public void surfaceDestroyed(SurfaceHolder holder) {
-//				// TODO Auto-generated method stub
-//				// release the camera
-//				myCamera.release();
-//			}
-//			
-//			@Override
-//			public void surfaceCreated(SurfaceHolder holder) {
-//				// TODO Auto-generated method stub
-//				try {
-//					myCamera.setPreviewDisplay(holder);
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//				myCamera.startPreview();
-////				myCamera.unlock();
-////				
-////				MediaRecorder medRecorder = new MediaRecorder();
-////				medRecorder.setCamera(myCamera);
-////				medRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
-////				medRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-////				medRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_1080P));
-////				medRecorder.setOutputFile(Media.getOutputMediaFile(Media.MEDIA_TYPE_VIDEO).toString());
-////				medRecorder.setPreviewDisplay(holder.getSurface());
-////				try {
-////					medRecorder.prepare();
-////				} catch (IllegalStateException e) {
-////					// TODO Auto-generated catch block
-////					e.printStackTrace();
-////				} catch (IOException e) {
-////					// TODO Auto-generated catch block
-////					e.printStackTrace();
-////				}
-////				medRecorder.start();
-//
-//			}
-//			
-//			@Override
-//			public void surfaceChanged(SurfaceHolder holder, int format, int width,
-//					int height) {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//		});
+		if (mPreview == null) {
+			mPreview = new CameraPreview(this, myCamera);
+			mFrameLayoutPreview = (FrameLayout)findViewById(R.id.camera_preview);
+			mFrameLayoutPreview.addView(mPreview);
+		}		
+		return true;
 	}
+
+	@Override
+	public void onPause() {
+	    super.onPause();  // Always call the superclass method first
+
+	    // Release the Camera because we don't need it when paused
+	    // and other activities might need to use it.
+	    if (myCamera != null) {
+	    	myCamera.release();
+	        myCamera = null;
+	    }
+	}
+		
+	public void captureButton_Click(View v) {
+	    if (((ToggleButton)v).isChecked()) {
+	    	// start recording
+	    	mMediaRecorder = new MediaRecorder();
+	    	myCamera.unlock();			
+			mMediaRecorder.setCamera(myCamera);
+			mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
+			mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+			mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_1080P));
+			mMediaRecorder.setOutputFile(Media.getOutputMediaFile(Media.MEDIA_TYPE_VIDEO).toString());
+			mMediaRecorder.setPreviewDisplay(mPreview.getHolder().getSurface());
+			
+			// prepare the media recorder
+			try {
+				mMediaRecorder.prepare();
+				mMediaRecorder.start();
+			} catch (IllegalStateException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}			
+	    } else {
+	    	// stop recording
+	    	mMediaRecorder.stop();
+	    	mMediaRecorder.reset();
+	    	mMediaRecorder.release();
+	    	myCamera.lock();	    	
+	    }
+	}
+	
 	
 	/** A safe way to get an instance of the Camera object. */
 	public static Camera getCameraInstance() {
