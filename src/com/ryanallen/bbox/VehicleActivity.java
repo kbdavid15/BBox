@@ -19,7 +19,7 @@ public class VehicleActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_vehicles);
+		setContentView(R.layout.vehicles_layout);
 		
 		// add dummy vehicles
 		vehicles[0] = new Vehicle("Chevy", "Cruze");
