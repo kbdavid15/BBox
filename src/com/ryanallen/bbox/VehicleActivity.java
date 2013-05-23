@@ -1,9 +1,7 @@
 package com.ryanallen.bbox;
 
-import java.util.ArrayList;
-
-import android.os.Bundle;
 import android.app.Activity;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,14 +23,12 @@ public class VehicleActivity extends Activity {
 		
 		// add dummy vehicles
 		vehicles[0] = new Vehicle("Chevy", "Cruze");
-		vehicles[1] = new Vehicle("Chevy", "Camero");
-		
+		vehicles[1] = new Vehicle("Chevy", "Camaro");		
 		
 		vehicleListView = (ListView) findViewById(R.id.listViewVehicles);
 		
 		// create an array adapter for the listview
-		myArrayAdapter = new ArrayAdapter<Vehicle>(this, android.R.layout.simple_list_item_1, vehicles);
-		
+		myArrayAdapter = new ArrayAdapter<Vehicle>(this, android.R.layout.simple_list_item_1, vehicles);		
 		vehicleListView.setAdapter(myArrayAdapter);
         
         // add onClick listener for listview
