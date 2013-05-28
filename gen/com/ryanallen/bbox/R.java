@@ -42,13 +42,12 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int ic_launcher=0x7f020001;
     }
     public static final class id {
-        public static final int action_settings=0x7f0b0006;
+        public static final int action_settings=0x7f0b0005;
         public static final int button_capture=0x7f0b0001;
         public static final int camera_preview=0x7f0b0000;
-        public static final int fragmentView=0x7f0b0002;
-        public static final int listViewVehicles=0x7f0b0005;
-        public static final int record=0x7f0b0004;
-        public static final int title=0x7f0b0003;
+        public static final int listViewVehicles=0x7f0b0004;
+        public static final int record=0x7f0b0003;
+        public static final int title=0x7f0b0002;
     }
     public static final class layout {
         public static final int activity_recording=0x7f030000;

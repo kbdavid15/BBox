@@ -16,16 +16,11 @@ public class BBoxActivity extends Activity {
 	private static final int REQUEST_START_RECORD = 1;
 	private static final int REQUEST_SHOW_VEHICLES = 2;
 	private static final int REQUEST_SHOW_OPTIONS = 3;
-	
-	// ui elements
-	private View fragmentView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.bbox_activity_layout);
-		
-		fragmentView = (View)findViewById(R.id.fragmentView);
 		
 		// setup action bar for tabs
 	    ActionBar actionBar = getActionBar();
@@ -51,18 +46,7 @@ public class BBoxActivity extends Activity {
 	public void onStartRecord(View v) {
 		Intent record = new Intent(this, RecordingActivity.class);
 		startActivityForResult(record, REQUEST_START_RECORD);
-	}
-	
-	public void showVehicles(View v){
-		Intent record = new Intent(this, VehicleActivity.class);
-		startActivityForResult(record, REQUEST_SHOW_VEHICLES);
-	}
-	
-	public void showOptions(View v){
-		Intent record = new Intent(this, OptionsActivity.class);
-		startActivityForResult(record, REQUEST_SHOW_OPTIONS);
-	}
-	
+	}	
 	
 	public static class TabListener<T extends Fragment> implements ActionBar.TabListener {
 	    private Fragment mFragment;
