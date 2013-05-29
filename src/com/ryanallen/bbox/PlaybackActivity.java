@@ -54,7 +54,8 @@ public class PlaybackActivity extends Activity {
 		setContentView(R.layout.activity_playback);
 		setupActionBar();
 
-		final View contentView = findViewById(R.id.fullscreen_content);
+		final View controlsView = findViewById(R.id.fullscreen_content_controls);
+		final View contentView = findViewById(R.id.videoView1);
 
 		// Set up an instance of SystemUiHider to control the system UI for
 		// this activity.
