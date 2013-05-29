@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="25dp"
-        android:text="Black Box"
+        android:text="@string/long_app_name"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <Button
@@ -20,6 +20,6 @@
         android:layout_height="wrap_content"
         android:height="100dp"
         android:onClick="onStartRecord"
-        android:text="Start Recording" />
+        android:text="@string/start_recording" />
     
 </LinearLayout>

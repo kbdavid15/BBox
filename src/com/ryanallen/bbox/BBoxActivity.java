@@ -15,7 +15,7 @@ import android.view.View;
 public class BBoxActivity extends Activity {
 	
 	private static final int REQUEST_START_RECORD = 1;
-	private static final int REQUEST_SHOW_VEHICLES = 2;
+//	private static final int REQUEST_SHOW_VEHICLES = 2;
 	private static final int REQUEST_SHOW_OPTIONS = 3;
 
 	@Override
@@ -30,6 +30,8 @@ public class BBoxActivity extends Activity {
 		Tab tab = actionBar.newTab().setText("Home").setTabListener(new TabListener<DashboardFragment>(this, "Dashboard", DashboardFragment.class));
 		actionBar.addTab(tab);
 		tab = actionBar.newTab().setText("Vehicles").setTabListener(new TabListener<VehiclesFragment>(this, "Vehicles", VehiclesFragment.class));
+		actionBar.addTab(tab);
+		tab = actionBar.newTab().setText("Review").setTabListener(new TabListener<ReviewFragment>(this, "Review", ReviewFragment.class));
 		actionBar.addTab(tab);
 //		tab = actionBar.newTab().setText("Options").setTabListener(new TabListener<OptionsFragment>(this, "Options", OptionsFragment.class));
 //		actionBar.addTab(tab);

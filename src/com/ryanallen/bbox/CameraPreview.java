@@ -2,10 +2,8 @@ package com.ryanallen.bbox;
 
 import java.io.IOException;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.hardware.Camera;
-import android.os.Build;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -15,6 +13,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 	private Camera mCamera;
 
 //	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+	@SuppressWarnings("deprecation")
 	public CameraPreview(Context context, Camera camera) {
 		super(context);
 		mCamera = camera;
