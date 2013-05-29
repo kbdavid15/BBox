@@ -34,6 +34,9 @@ public class ReviewFragment extends ListFragment {
 	}
 	
 	@Override
+	/**
+	 * Start the playback activity for the selected video
+	 */
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		
 	}

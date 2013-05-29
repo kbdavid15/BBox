@@ -7,17 +7,16 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>    
-    
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <uses-sdk
         android:minSdkVersion="13"
         android:targetSdkVersion="17" />
-    
 
     <application
         android:allowBackup="true"
@@ -38,7 +37,7 @@
             android:label="@string/title_activity_recording"
             android:parentActivityName="com.ryanallen.bbox.BBoxActivity"
             android:screenOrientation="landscape" >
-            <meta-data 
+            <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ryanallen.bbox.BBoxActivity" />
         </activity>
@@ -49,6 +48,16 @@
         <activity
             android:name="com.ryanallen.bbox.OptionsActivity"
             android:label="@string/title_activity_options" >
+        </activity>
+        <activity
+            android:name="com.ryanallen.bbox.PlaybackActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_playback"
+            android:parentActivityName="com.ryanallen.bbox.BBoxActivity"
+            android:theme="@style/FullscreenTheme" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.ryanallen.bbox.BBoxActivity" />
         </activity>
     </application>
 
