@@ -35,7 +35,11 @@
         <activity
             android:name="com.ryanallen.bbox.RecordingActivity"
             android:label="@string/title_activity_recording"
+            android:parentActivityName="com.ryanallen.bbox.BBoxActivity"
             android:screenOrientation="landscape" >
+            <meta-data 
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.ryanallen.bbox.BBoxActivity" />
         </activity>
         <activity
             android:name="com.ryanallen.bbox.VehicleActivity"

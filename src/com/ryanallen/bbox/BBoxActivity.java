@@ -8,6 +8,7 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 
@@ -25,22 +26,38 @@ public class BBoxActivity extends Activity {
 		// setup action bar for tabs
 	    ActionBar actionBar = getActionBar();
 	    actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-	    actionBar.setDisplayShowTitleEnabled(false);	
-		
+	    
 		Tab tab = actionBar.newTab().setText("Home").setTabListener(new TabListener<DashboardFragment>(this, "Dashboard", DashboardFragment.class));
 		actionBar.addTab(tab);
 		tab = actionBar.newTab().setText("Vehicles").setTabListener(new TabListener<VehiclesFragment>(this, "Vehicles", VehiclesFragment.class));
 		actionBar.addTab(tab);
-		tab = actionBar.newTab().setText("Options").setTabListener(new TabListener<OptionsFragment>(this, "Options", OptionsFragment.class));
-		actionBar.addTab(tab);
+//		tab = actionBar.newTab().setText("Options").setTabListener(new TabListener<OptionsFragment>(this, "Options", OptionsFragment.class));
+//		actionBar.addTab(tab);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		
+		// Inflate the menu; this adds items to the action bar if it is present.		
 		getMenuInflater().inflate(R.menu.bbox, menu);
 		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+		switch (item.getItemId()) {
+		case R.id.action_settings:
+			Intent intent = new Intent(this, OptionsActivity.class);
+			startActivityForResult(intent, REQUEST_SHOW_OPTIONS);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 	
 	public void onStartRecord(View v) {

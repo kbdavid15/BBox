@@ -1,22 +1,12 @@
 package com.ryanallen.bbox;
 
-import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import android.app.Activity;
-import android.gesture.Prediction;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.util.Log;
-import android.view.SurfaceHolder;
-import android.view.SurfaceHolder.Callback;
-import android.view.SurfaceView;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ToggleButton;
@@ -39,12 +29,12 @@ public class RecordingActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_recording);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 	
 	@Override
 	public void onResume() {
-		super.onResume();
-		
+		super.onResume();		
 		// Get the Camera instance as the activity achieves full user focus
 	    if (myCamera == null) {
 	        initializeCamera(); // Local method to handle camera init
@@ -61,14 +51,14 @@ public class RecordingActivity extends Activity {
 			mPreview = new CameraPreview(this, myCamera);
 			mFrameLayoutPreview = (FrameLayout)findViewById(R.id.camera_preview);
 			mFrameLayoutPreview.addView(mPreview);
-		}		
+		}
 		return true;
 	}
 
 	@Override
 	public void onPause() {
 	    super.onPause();  // Always call the superclass method first
-
+	    
 	    // Release the Camera because we don't need it when paused
 	    // and other activities might need to use it.
 	    if (myCamera != null) {
