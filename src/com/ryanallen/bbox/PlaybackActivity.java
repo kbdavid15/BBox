@@ -54,7 +54,6 @@ public class PlaybackActivity extends Activity {
 		setContentView(R.layout.activity_playback);
 		setupActionBar();
 
-		final View controlsView = findViewById(R.id.fullscreen_content_controls);
 		final View contentView = findViewById(R.id.fullscreen_content);
 
 		// Set up an instance of SystemUiHider to control the system UI for
@@ -117,8 +116,8 @@ public class PlaybackActivity extends Activity {
 		// Upon interacting with UI controls, delay any scheduled hide()
 		// operations to prevent the jarring behavior of controls going away
 		// while interacting with the UI.
-		findViewById(R.id.dummy_button).setOnTouchListener(
-				mDelayHideTouchListener);
+//		findViewById(R.id.dummy_button).setOnTouchListener(
+//				mDelayHideTouchListener);
 	}
 
 	@Override
