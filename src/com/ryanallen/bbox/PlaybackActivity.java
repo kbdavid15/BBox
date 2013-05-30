@@ -46,10 +46,18 @@ public class PlaybackActivity extends Activity {
 	 * The instance of the {@link SystemUiHider} for this activity.
 	 */
 	private SystemUiHider mSystemUiHider;
+	
+	private String videoPath;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		// get the values from the parent activity
+		Bundle extras = getIntent().getExtras();
+		if (extras != null) {
+			videoPath = extras.getString(ReviewFragment.SELECTED_VIDEO_FILE);
+		}
 
 		setContentView(R.layout.activity_playback);
 		setupActionBar();

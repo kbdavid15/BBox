@@ -2,23 +2,22 @@ package com.ryanallen.bbox;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 
 import android.content.Context;
 import android.os.Environment;
+import android.text.format.DateFormat;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
-import android.widget.TwoLineListItem;
+import android.widget.TextView;
 
 public class VideoFile extends File {
 	private static final long serialVersionUID = -6694017648316508704L;
-	public String filePath;
 	
 	public VideoFile(String path) {
 		super(path);
-		filePath = path;
-		// TODO Auto-generated constructor stub
 	}
 	
 	public static ArrayList<VideoFile> getAllBboxVideos() {
@@ -44,47 +43,46 @@ public class VideoFile extends File {
 	public String toString() {
 		return getName();
 	}
-	
-	class TwoLineAdapter extends BaseAdapter {
-		private Context context;
-		private ArrayList<VideoFile> videoFiles;
-		
-		public TwoLineAdapter(Context context, ArrayList<VideoFile> videoFiles) {
-			this.context = context;
-			this.videoFiles = videoFiles;
-		}
+}
 
-		@Override
-		public int getCount() {
-			return videoFiles.size();
-		}
-		@Override
-		public Object getItem(int position) {
-			return videoFiles.get(position);
-		}
-		@Override
-		public long getItemId(int position) {
-			return 0;
-		}
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			LinearLayout twoLineLayout;
-			
-			if (convertView == null) {
-				twoLineLayout = new LinearLayout(context);
-				LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-				//TODO make a template in xml and use layout inflater
-			} else {
-				twoLineLayout = (LinearLayout)convertView;
-			}
-			
-			return twoLineLayout;
-		}
+class DetailAdapter extends BaseAdapter {
+	private Context context;
+	private ArrayList<VideoFile> videoFiles;
+	private LayoutInflater inflater;
+	
+	public DetailAdapter(Context context, ArrayList<VideoFile> videoFiles) {
+		this.context = context;
+		this.videoFiles = videoFiles;
+		this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
-	
-	
-	
-	
-	
-	
+
+	@Override
+	public int getCount() {
+		return videoFiles.size();
+	}
+	@Override
+	public Object getItem(int position) {
+		return videoFiles.get(position);
+	}
+	@Override
+	public long getItemId(int position) {
+		return 0;
+	}
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent) {
+		if (convertView == null) {
+            convertView = inflater.inflate(R.layout.video_file_item_layout, null);
+        }
+		
+		// get handles on the TextViews
+		TextView titleText = (TextView)convertView.findViewById(R.id.textViewTitle);
+		TextView detailText = (TextView)convertView.findViewById(R.id.textViewDetail);
+		
+		// set the text on the TextViews
+		VideoFile video = (VideoFile)getItem(position);
+		titleText.setText(video.getName());
+		Date date = new Date(video.lastModified());
+		detailText.setText(DateFormat.format("EEEE, MMMM d, yyyy hh:mm A", date));
+		return convertView;
+	}
 }

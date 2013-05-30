@@ -19,7 +19,7 @@ public class VehiclesFragment extends Fragment {
 	private OnItemClickListener selectVehicleListener = new OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			Toast.makeText(parent.getContext(), myArrayAdapter.getItem(position).toString(), Toast.LENGTH_SHORT).show();
+			Toast.makeText(getActivity(), myArrayAdapter.getItem(position).toString(), Toast.LENGTH_SHORT).show();
 		}
 	};
 	
@@ -43,7 +43,7 @@ public class VehiclesFragment extends Fragment {
 		vehicleListView = (ListView)getView().findViewById(R.id.listViewVehicles);
 		
 		// create an array adapter for the listview
-		myArrayAdapter = new ArrayAdapter<Vehicle>(getView().getContext(), android.R.layout.simple_list_item_1, vehicles);		
+		myArrayAdapter = new ArrayAdapter<Vehicle>(getActivity(), android.R.layout.simple_list_item_1, vehicles);		
 		vehicleListView.setAdapter(myArrayAdapter);
         
         // add onClick listener for listview
