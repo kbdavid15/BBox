@@ -2,6 +2,7 @@ package com.ryanallen.bbox;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 
 import android.content.Context;
@@ -33,6 +34,7 @@ public class VideoFile extends File {
 			for (File file : fileArray) {
 				videoFileList.add(new VideoFile(file.getAbsolutePath()));
 			}
+			Collections.reverse(videoFileList);	// reverse the list so that most recent videos are on top
 			return videoFileList;
 		} else {
 			return null;
