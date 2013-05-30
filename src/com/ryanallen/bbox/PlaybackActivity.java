@@ -67,7 +67,7 @@ public class PlaybackActivity extends Activity {
 		setContentView(R.layout.activity_playback);
 		setupActionBar();
 
-		//final View controlsView = findViewById(R.id.fullscreen_content_controls);
+		final View controlsView = findViewById(R.id.fullscreen_content_controls);
 		final View contentView = findViewById(R.id.videoView1);
 
 		// Set up an instance of SystemUiHider to control the system UI for
@@ -90,22 +90,22 @@ public class PlaybackActivity extends Activity {
 							// in-layout UI controls at the bottom of the
 							// screen.
 							if (mControlsHeight == 0) {
-//								mControlsHeight = controlsView.getHeight();
+								mControlsHeight = controlsView.getHeight();
 							}
 							if (mShortAnimTime == 0) {
 								mShortAnimTime = getResources().getInteger(
 										android.R.integer.config_shortAnimTime);
 							}
-//							controlsView
-//									.animate()
-//									.translationY(visible ? 0 : mControlsHeight)
-//									.setDuration(mShortAnimTime);
+							controlsView
+									.animate()
+									.translationY(visible ? 0 : mControlsHeight)
+									.setDuration(mShortAnimTime);
 						} else {
 							// If the ViewPropertyAnimator APIs aren't
 							// available, simply show or hide the in-layout UI
 							// controls.
-//							controlsView.setVisibility(visible ? View.VISIBLE
-//									: View.GONE);
+							controlsView.setVisibility(visible ? View.VISIBLE
+									: View.GONE);
 						}
 
 						if (visible && AUTO_HIDE) {
