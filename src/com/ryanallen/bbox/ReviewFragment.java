@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Toast;
 
 public class ReviewFragment extends ListFragment {
 	private DetailAdapter mDetailAdapter;	
@@ -48,6 +47,6 @@ public class ReviewFragment extends ListFragment {
 		videoPlaybackIntent.putExtra(SELECTED_VIDEO_FILE, selectedFile.getPath());
 		
 		// start the activity
-		//startActivity(videoPlaybackIntent);
+		startActivity(videoPlaybackIntent);
 	}
 }

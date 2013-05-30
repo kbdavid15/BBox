@@ -1,16 +1,18 @@
 package com.ryanallen.bbox;
 
-import com.ryanallen.bbox.util.SystemUiHider;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.NavUtils;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.MenuItem;
-import android.support.v4.app.NavUtils;
+import android.widget.MediaController;
+import android.widget.VideoView;
+
+import com.ryanallen.bbox.util.SystemUiHider;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -48,6 +50,7 @@ public class PlaybackActivity extends Activity {
 	private SystemUiHider mSystemUiHider;
 	
 	private String videoPath;
+	private VideoView mVideoView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +61,8 @@ public class PlaybackActivity extends Activity {
 		if (extras != null) {
 			videoPath = extras.getString(ReviewFragment.SELECTED_VIDEO_FILE);
 		}
+		
+		//Toast.makeText(this, videoPath, Toast.LENGTH_SHORT).show();
 
 		setContentView(R.layout.activity_playback);
 		setupActionBar();
@@ -127,6 +132,16 @@ public class PlaybackActivity extends Activity {
 		// while interacting with the UI.
 //		findViewById(R.id.dummy_button).setOnTouchListener(
 //				mDelayHideTouchListener);
+		
+		// load the video
+		mVideoView = (VideoView)findViewById(R.id.videoView1);
+		
+		// setup the video
+		mVideoView.setVideoPath(videoPath);
+		mVideoView.setMediaController(new MediaController(this));
+		
+		// start the video 
+		mVideoView.start();
 	}
 
 	@Override
