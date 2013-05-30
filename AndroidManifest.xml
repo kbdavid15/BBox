@@ -53,6 +53,9 @@
         <activity
             android:name="com.ryanallen.bbox.OptionsActivity"
             android:label="@string/title_activity_options" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.ryanallen.bbox.BBoxActivity" />
         </activity>
         <activity
             android:name="com.ryanallen.bbox.PlaybackActivity"
