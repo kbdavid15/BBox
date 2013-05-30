@@ -44,6 +44,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
     public static final class drawable {
         public static final int bbox_launcher=0x7f020000;
         public static final int ic_launcher=0x7f020001;
+        public static final int splash_bg=0x7f020002;
     }
     public static final class id {
         public static final int action_settings=0x7f0b0009;
@@ -60,16 +61,18 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
     public static final class layout {
         public static final int activity_playback=0x7f030000;
         public static final int activity_recording=0x7f030001;
-        public static final int bbox_activity_layout=0x7f030002;
-        public static final int dashboard_layout=0x7f030003;
-        public static final int options_layout=0x7f030004;
-        public static final int review_layout=0x7f030005;
-        public static final int vehicles_layout=0x7f030006;
-        public static final int video_file_item_layout=0x7f030007;
+        public static final int activity_splash=0x7f030002;
+        public static final int bbox_activity_layout=0x7f030003;
+        public static final int dashboard_layout=0x7f030004;
+        public static final int options_layout=0x7f030005;
+        public static final int review_layout=0x7f030006;
+        public static final int vehicles_layout=0x7f030007;
+        public static final int video_file_item_layout=0x7f030008;
     }
     public static final class menu {
         public static final int bbox=0x7f0a0000;
-        public static final int vehicles=0x7f0a0001;
+        public static final int splash=0x7f0a0001;
+        public static final int vehicles=0x7f0a0002;
     }
     public static final class string {
         public static final int action_settings=0x7f070002;
@@ -80,33 +83,34 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int long_app_name=0x7f070001;
         /**  Example settings for Data & Sync 
          */
-        public static final int pref_header_data_sync=0x7f070012;
+        public static final int pref_header_data_sync=0x7f070013;
         /**  Strings related to Settings 
  Example General settings 
          */
-        public static final int pref_header_general=0x7f07000d;
+        public static final int pref_header_general=0x7f07000e;
         /**  Example settings for Notifications 
          */
-        public static final int pref_header_notifications=0x7f070015;
-        public static final int pref_ringtone_silent=0x7f070018;
-        public static final int pref_title_add_friends_to_messages=0x7f070011;
-        public static final int pref_title_location_update_freq=0x7f07001b;
-        public static final int pref_title_record_audio=0x7f07000e;
-        public static final int pref_title_record_video=0x7f07000f;
-        public static final int pref_title_ringtone=0x7f070017;
-        public static final int pref_title_show_map=0x7f07001a;
-        public static final int pref_title_si_units=0x7f07001c;
-        public static final int pref_title_sync_frequency=0x7f070013;
-        public static final int pref_title_system_sync_settings=0x7f070014;
-        public static final int pref_title_track_location=0x7f070016;
-        public static final int pref_title_vibrate=0x7f070019;
-        public static final int pref_title_video_quality=0x7f070010;
+        public static final int pref_header_notifications=0x7f070016;
+        public static final int pref_ringtone_silent=0x7f070019;
+        public static final int pref_title_add_friends_to_messages=0x7f070012;
+        public static final int pref_title_location_update_freq=0x7f07001c;
+        public static final int pref_title_record_audio=0x7f07000f;
+        public static final int pref_title_record_video=0x7f070010;
+        public static final int pref_title_ringtone=0x7f070018;
+        public static final int pref_title_show_map=0x7f07001b;
+        public static final int pref_title_si_units=0x7f07001d;
+        public static final int pref_title_sync_frequency=0x7f070014;
+        public static final int pref_title_system_sync_settings=0x7f070015;
+        public static final int pref_title_track_location=0x7f070017;
+        public static final int pref_title_vibrate=0x7f07001a;
+        public static final int pref_title_video_quality=0x7f070011;
         public static final int start=0x7f070008;
         public static final int start_recording=0x7f07000a;
         public static final int stop=0x7f070009;
-        public static final int title_activity_options=0x7f07000c;
+        public static final int title_activity_options=0x7f07000d;
         public static final int title_activity_playback=0x7f07000b;
         public static final int title_activity_recording=0x7f070004;
+        public static final int title_activity_splash=0x7f07000c;
         public static final int title_activity_vehicles=0x7f070007;
     }
     public static final class style {

@@ -13,5 +13,6 @@
     <string name="stop">Stop</string>
     <string name="start_recording">Start Recording</string>
     <string name="title_activity_playback">PlaybackActivity</string>
+    <string name="title_activity_splash">SplashActivity</string>
 
 </resources>
