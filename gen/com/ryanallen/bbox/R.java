@@ -105,7 +105,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int pref_title_vibrate=0x7f07001a;
         public static final int pref_title_video_quality=0x7f070011;
         public static final int start=0x7f070008;
-        public static final int start_recording=0x7f07000a;
+        public static final int start_monitoring=0x7f07000a;
         public static final int stop=0x7f070009;
         public static final int title_activity_options=0x7f07000d;
         public static final int title_activity_playback=0x7f07000b;
