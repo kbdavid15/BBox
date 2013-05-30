@@ -56,32 +56,27 @@ public class OptionsActivity extends PreferenceActivity {
 		if (!isSimplePreferences(this)) {
 			return;
 		}
+		
 
 		// In the simplified UI, fragments are not used at all and we instead
 		// use the older PreferenceActivity APIs.
 
 		// Add 'general' preferences.
-		addPreferencesFromResource(R.xml.pref_general);
+		addPreferencesFromResource(R.xml.pref_recording);
 
 		// Add 'notifications' preferences, and a corresponding header.
-		PreferenceCategory fakeHeader = new PreferenceCategory(this);
-		fakeHeader.setTitle(R.string.pref_header_notifications);
-		getPreferenceScreen().addPreference(fakeHeader);
-		addPreferencesFromResource(R.xml.pref_notification);
+		addPreferencesFromResource(R.xml.pref_location);
 
 		// Add 'data and sync' preferences, and a corresponding header.
-		fakeHeader = new PreferenceCategory(this);
-		fakeHeader.setTitle(R.string.pref_header_data_sync);
-		getPreferenceScreen().addPreference(fakeHeader);
-		addPreferencesFromResource(R.xml.pref_data_sync);
+		addPreferencesFromResource(R.xml.pref_display);
 
 		// Bind the summaries of EditText/List/Dialog/Ringtone preferences to
 		// their values. When their values change, their summaries are updated
 		// to reflect the new value, per the Android Design guidelines.
 		//bindPreferenceSummaryToValue(findPreference("example_text"));
-		bindPreferenceSummaryToValue(findPreference("recording_quality"));
-		bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
-		bindPreferenceSummaryToValue(findPreference("sync_frequency"));
+		bindPreferenceSummaryToValue(findPreference("video_quality"));
+		bindPreferenceSummaryToValue(findPreference("location_update_freq"));
+		bindPreferenceSummaryToValue(findPreference("si_units"));
 	}
 
 	/** {@inheritDoc} */
@@ -200,18 +195,18 @@ public class OptionsActivity extends PreferenceActivity {
 	 * activity is showing a two-pane settings UI.
 	 */
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	public static class GeneralPreferenceFragment extends PreferenceFragment {
+	public static class RecordingPreferenceFragment extends PreferenceFragment {
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
-			addPreferencesFromResource(R.xml.pref_general);
+			addPreferencesFromResource(R.xml.pref_recording);
 
 			// Bind the summaries of EditText/List/Dialog/Ringtone preferences
 			// to their values. When their values change, their summaries are
 			// updated to reflect the new value, per the Android Design
 			// guidelines.
 			/*bindPreferenceSummaryToValue(findPreference("example_text"));*/
-			bindPreferenceSummaryToValue(findPreference("recording_quality"));
+			bindPreferenceSummaryToValue(findPreference("video_quality"));
 		}
 	}
 
@@ -220,18 +215,18 @@ public class OptionsActivity extends PreferenceActivity {
 	 * activity is showing a two-pane settings UI.
 	 */
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	public static class NotificationPreferenceFragment extends
+	public static class LocationPreferenceFragment extends
 			PreferenceFragment {
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
-			addPreferencesFromResource(R.xml.pref_notification);
+			addPreferencesFromResource(R.xml.pref_location);
 
 			// Bind the summaries of EditText/List/Dialog/Ringtone preferences
 			// to their values. When their values change, their summaries are
 			// updated to reflect the new value, per the Android Design
 			// guidelines.
-			bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
+			bindPreferenceSummaryToValue(findPreference("location_update_freq"));
 		}
 	}
 
@@ -240,17 +235,18 @@ public class OptionsActivity extends PreferenceActivity {
 	 * activity is showing a two-pane settings UI.
 	 */
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	public static class DataSyncPreferenceFragment extends PreferenceFragment {
+	public static class DisplayPreferenceFragment extends PreferenceFragment {
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
-			addPreferencesFromResource(R.xml.pref_data_sync);
+			addPreferencesFromResource(R.xml.pref_display);
 
 			// Bind the summaries of EditText/List/Dialog/Ringtone preferences
 			// to their values. When their values change, their summaries are
 			// updated to reflect the new value, per the Android Design
 			// guidelines.
-			bindPreferenceSummaryToValue(findPreference("sync_frequency"));
+			bindPreferenceSummaryToValue(findPreference("si_units"));
+			
 		}
 	}
 }

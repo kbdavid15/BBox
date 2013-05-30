@@ -9,7 +9,7 @@
     <string name="pref_header_general">General</string>
     <string name="pref_title_record_audio">Record Audio</string>
     <string name="pref_title_record_video">Record Video</string>
-    <string name="pref_title_recording_quality">Recording Quality</string>
+    <string name="pref_title_video_quality">Video Quality</string>
     <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
 
     <string-array name="pref_example_list_titles">
@@ -42,9 +42,32 @@
 
     <!-- Example settings for Notifications -->
     <string name="pref_header_notifications">Notifications</string>
-    <string name="pref_title_new_message_notifications">New message notifications</string>
+    <string name="pref_title_track_location">Track Location</string>
     <string name="pref_title_ringtone">Ringtone</string>
     <string name="pref_ringtone_silent">Silent</string>
     <string name="pref_title_vibrate">Vibrate</string>
+    <string name="pref_title_show_map">Show Location Map</string>
+    <string-array name="pref_location_update_freq_titles">
+        <item >1sec</item>
+        <item >10sec</item>
+        <item >30sec</item>
+        <item >1min</item>
+    </string-array>
+    <string-array name="pref_location_update_freq_values">
+        <item >1</item>
+        <item >10</item>
+        <item >30</item>
+        <item >60</item>
+    </string-array>
+    <string name="pref_title_location_update_freq">Location Update Frequency</string>
+    <string-array name="pref_si_units_titles">
+        <item >Metric</item>
+        <item >English Standard</item>
+    </string-array>
+    <string-array name="pref_si_units_values">
+        <item >metric</item>
+        <item >standard</item>
+    </string-array>
+    <string name="pref_title_si_units">SI Units</string>
 
 </resources>

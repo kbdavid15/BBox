@@ -1,0 +1,30 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <!--
+         A 'parent' preference, which enables/disables child preferences (below)
+         when checked/unchecked.
+    -->
+    <PreferenceCategory 
+    	android:title="Location Settings">
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="track_location"
+        android:title="@string/pref_title_track_location" />
+
+   <CheckBoxPreference
+        android:defaultValue="true"
+        android:dependency="track_location"
+        android:key="show_map"
+        android:title="@string/pref_title_show_map" />
+   <ListPreference
+       android:defaultValue="10"
+       android:dependency="track_location"
+       android:entries="@array/pref_location_update_freq_titles"
+       android:entryValues="@array/pref_location_update_freq_values"
+       android:key="location_update_freq"
+       android:title="@string/pref_title_location_update_freq"
+       />
+
+    <!-- NOTE: This preference will be enabled only when the checkbox above is checked. -->
+	</PreferenceCategory>
+</PreferenceScreen>
