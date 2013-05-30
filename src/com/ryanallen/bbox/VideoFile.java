@@ -26,10 +26,9 @@ public class VideoFile extends File {
 		File videoStorageDir = new File(
 			Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES), 
 			"BlackBox");
-		
+		ArrayList<VideoFile> videoFileList = new ArrayList<VideoFile>();
 		// get a list of files
-		if (videoStorageDir.exists()) {
-			ArrayList<VideoFile> videoFileList = new ArrayList<VideoFile>();
+		if (videoStorageDir.exists()) {			
 			File[] fileArray = videoStorageDir.listFiles();
 			for (File file : fileArray) {
 				videoFileList.add(new VideoFile(file.getAbsolutePath()));
@@ -37,7 +36,7 @@ public class VideoFile extends File {
 			Collections.reverse(videoFileList);	// reverse the list so that most recent videos are on top
 			return videoFileList;
 		} else {
-			return null;
+			return videoFileList;
 		}
 	}
 	

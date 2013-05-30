@@ -8,7 +8,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class ReviewFragment extends ListFragment {
 	private DetailAdapter mDetailAdapter;	
@@ -30,8 +32,16 @@ public class ReviewFragment extends ListFragment {
 		reviewListView = (ListView)getListView();
 		videoFiles = VideoFile.getAllBboxVideos();
 		
-		mDetailAdapter = new DetailAdapter(getActivity(), videoFiles);		
-		reviewListView.setAdapter(mDetailAdapter);
+		// if there are no video files, tell the user
+		if (videoFiles.size() != 0) {
+			mDetailAdapter = new DetailAdapter(getActivity(), videoFiles);		
+			reviewListView.setAdapter(mDetailAdapter);
+		} else {
+			String[] errorText = { "No videos found" };
+			reviewListView.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, errorText));
+		}
+		
+		
 	}
 	
 	@Override
@@ -40,8 +50,12 @@ public class ReviewFragment extends ListFragment {
 	 */
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		// get the selected video file
-		VideoFile selectedFile = (VideoFile)l.getItemAtPosition(position);
-		
+		VideoFile selectedFile = null;
+		try {
+			selectedFile = (VideoFile)l.getItemAtPosition(position);
+		} catch (ClassCastException e) {
+			return;
+		}
 		// setup the playback activity
 		Intent videoPlaybackIntent = new Intent(getActivity(), PlaybackActivity.class);
 		videoPlaybackIntent.putExtra(SELECTED_VIDEO_FILE, selectedFile.getPath());
