@@ -1,16 +1,8 @@
 package com.ryanallen.bbox;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-
-import android.app.Activity;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.Service;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 
 public class LocationTrackerService extends Service {
 

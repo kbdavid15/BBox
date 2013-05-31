@@ -2,11 +2,9 @@ package com.ryanallen.bbox;
 
 import java.io.IOException;
 
-import android.R.integer;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.hardware.Camera;
-import android.hardware.Camera.CameraInfo;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
 import android.os.Bundle;
@@ -16,7 +14,6 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.google.android.gms.maps.model.CameraPosition;
 import com.ryanallen.bbox.util.SystemUiHider;
 
 /**
