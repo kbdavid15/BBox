@@ -10,7 +10,6 @@
     <string name="pref_title_record_audio">Record Audio</string>
     <string name="pref_title_record_video">Record Video</string>
     <string name="pref_title_video_quality">Video Quality</string>
-    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
 
     <string-array name="pref_example_list_titles">
         <item>Always</item>
@@ -30,11 +29,16 @@
     <string-array name="pref_record_quality_titles">
         <item>1080p</item>
         <item>720p</item>
+        <item>480p</item>
+        <item>Highest</item>
         <item>Low</item>
     </string-array>
     <string-array name="pref_record_quality_values">
-        <item>1080</item>
-        <item>720</item>
+        <!-- The values here correspond to the constants in the CamcorderProfile -->
+        <item>6</item>
+        <item>5</item>
+        <item>4</item>
+        <item>1</item>
         <item>0</item>
     </string-array>
 

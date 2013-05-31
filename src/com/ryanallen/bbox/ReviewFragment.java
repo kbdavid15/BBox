@@ -39,9 +39,7 @@ public class ReviewFragment extends ListFragment {
 		} else {
 			String[] errorText = { "No videos found" };
 			reviewListView.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, errorText));
-		}
-		
-		
+		}		
 	}
 	
 	@Override

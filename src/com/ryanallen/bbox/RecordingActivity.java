@@ -2,17 +2,21 @@ package com.ryanallen.bbox;
 
 import java.io.IOException;
 
+import android.R.integer;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.hardware.Camera;
+import android.hardware.Camera.CameraInfo;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.google.android.gms.maps.model.CameraPosition;
 import com.ryanallen.bbox.util.SystemUiHider;
 
 /**
@@ -83,12 +87,16 @@ public class RecordingActivity extends Activity {
 			mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
 			// set the recording quality based on the settings in options menu
 			try {
-				
-				mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_1080P));
+				//TODO look into why the integer array of values didn't work
+				String quality = settings.getString("video_quality", String.valueOf(CamcorderProfile.QUALITY_HIGH));
+				mMediaRecorder.setProfile(CamcorderProfile.get(Integer.parseInt(quality)));
+				Toast.makeText(this, "Recording quality: " + quality, Toast.LENGTH_SHORT).show();
 			} catch (RuntimeException e) {
 				// the selected quality is not available
-				
+				Toast.makeText(this, "The selected video quality is not available. Using highest available quality.", Toast.LENGTH_LONG).show();
+				mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH));
 			}
+			
 			mMediaRecorder.setOutputFile(Media.getOutputMediaFile(Media.MEDIA_TYPE_VIDEO).toString());
 			mMediaRecorder.setPreviewDisplay(mPreview.getHolder().getSurface());
 			

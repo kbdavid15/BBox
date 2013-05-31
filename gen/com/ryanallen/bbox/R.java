@@ -319,26 +319,25 @@ containing a value of this type.
         public static final int long_app_name=0x7f070016;
         /**  Example settings for Data & Sync 
          */
-        public static final int pref_header_data_sync=0x7f070028;
+        public static final int pref_header_data_sync=0x7f070027;
         /**  Strings related to Settings 
  Example General settings 
          */
         public static final int pref_header_general=0x7f070023;
         /**  Example settings for Notifications 
          */
-        public static final int pref_header_notifications=0x7f07002b;
-        public static final int pref_ringtone_silent=0x7f07002e;
-        public static final int pref_title_add_friends_to_messages=0x7f070027;
-        public static final int pref_title_location_update_freq=0x7f070031;
+        public static final int pref_header_notifications=0x7f07002a;
+        public static final int pref_ringtone_silent=0x7f07002d;
+        public static final int pref_title_location_update_freq=0x7f070030;
         public static final int pref_title_record_audio=0x7f070024;
         public static final int pref_title_record_video=0x7f070025;
-        public static final int pref_title_ringtone=0x7f07002d;
-        public static final int pref_title_show_map=0x7f070030;
-        public static final int pref_title_si_units=0x7f070032;
-        public static final int pref_title_sync_frequency=0x7f070029;
-        public static final int pref_title_system_sync_settings=0x7f07002a;
-        public static final int pref_title_track_location=0x7f07002c;
-        public static final int pref_title_vibrate=0x7f07002f;
+        public static final int pref_title_ringtone=0x7f07002c;
+        public static final int pref_title_show_map=0x7f07002f;
+        public static final int pref_title_si_units=0x7f070031;
+        public static final int pref_title_sync_frequency=0x7f070028;
+        public static final int pref_title_system_sync_settings=0x7f070029;
+        public static final int pref_title_track_location=0x7f07002b;
+        public static final int pref_title_vibrate=0x7f07002e;
         public static final int pref_title_video_quality=0x7f070026;
         public static final int start=0x7f07001d;
         public static final int start_monitoring=0x7f07001f;
