@@ -3,10 +3,12 @@ package com.ryanallen.bbox;
 import java.io.IOException;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ToggleButton;
@@ -24,12 +26,16 @@ public class RecordingActivity extends Activity {
 	private CameraPreview mPreview;
 	private FrameLayout mFrameLayoutPreview;
 	private MediaRecorder mMediaRecorder;
+	private SharedPreferences settings;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_recording);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
+		
+		// restore prefs
+		settings = PreferenceManager.getDefaultSharedPreferences(this);
 	}
 	
 	@Override
@@ -75,7 +81,14 @@ public class RecordingActivity extends Activity {
 			mMediaRecorder.setCamera(myCamera);
 			mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
 			mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-			mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_1080P));
+			// set the recording quality based on the settings in options menu
+			try {
+				
+				mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_1080P));
+			} catch (RuntimeException e) {
+				// the selected quality is not available
+				
+			}
 			mMediaRecorder.setOutputFile(Media.getOutputMediaFile(Media.MEDIA_TYPE_VIDEO).toString());
 			mMediaRecorder.setPreviewDisplay(mPreview.getHolder().getSurface());
 			
