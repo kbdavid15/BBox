@@ -6,7 +6,7 @@
     android:orientation="horizontal" >
 
     <FrameLayout
-        android:id="@+id/camera_preview"
+        android:id="@+id/camera_preview_stretched"
         android:layout_width="0dip"
         android:layout_height="fill_parent"
         android:layout_weight="1" />

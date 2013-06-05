@@ -72,6 +72,16 @@
             android:name="com.ryanallen.bbox.BBoxActivity"
             android:label="@string/app_name" >
         </activity>
+        <activity
+            android:name="com.ryanallen.bbox.RecordingFullscreenActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_recording_fullscreen"
+            android:parentActivityName="com.ryanallen.bbox.BBoxActivity"
+            android:theme="@style/FullscreenTheme" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.ryanallen.bbox.BBoxActivity" />
+        </activity>
     </application>
 
 </manifest>

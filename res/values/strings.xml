@@ -14,5 +14,6 @@
     <string name="start_monitoring">START</string>
     <string name="title_activity_playback">PlaybackActivity</string>
     <string name="title_activity_splash">SplashActivity</string>
+    <string name="title_activity_recording_fullscreen">RecordingFullscreenActivity</string>
 
 </resources>

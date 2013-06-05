@@ -203,32 +203,36 @@ containing a value of this type.
         public static final int splash_bg=0x7f02001a;
     }
     public static final class id {
-        public static final int action_settings=0x7f06000e;
+        public static final int action_settings=0x7f060011;
         public static final int button_capture=0x7f060008;
-        public static final int camera_preview=0x7f060007;
+        public static final int camera_preview_stretched=0x7f060007;
+        public static final int fullscreen_content=0x7f06000a;
+        public static final int fullscreen_content_controls=0x7f06000b;
         public static final int hybrid=0x7f060004;
-        public static final int listViewVehicles=0x7f06000b;
+        public static final int listViewVehicles=0x7f06000e;
         public static final int mapFragment=0x7f060006;
         public static final int none=0x7f060000;
         public static final int normal=0x7f060001;
-        public static final int record=0x7f06000a;
+        public static final int record=0x7f06000d;
         public static final int satellite=0x7f060002;
         public static final int terrain=0x7f060003;
-        public static final int textViewDetail=0x7f06000d;
-        public static final int textViewTitle=0x7f06000c;
-        public static final int title=0x7f060009;
+        public static final int test=0x7f060009;
+        public static final int textViewDetail=0x7f060010;
+        public static final int textViewTitle=0x7f06000f;
+        public static final int title=0x7f06000c;
         public static final int videoView1=0x7f060005;
     }
     public static final class layout {
         public static final int activity_playback=0x7f030000;
         public static final int activity_recording=0x7f030001;
-        public static final int activity_splash=0x7f030002;
-        public static final int bbox_activity_layout=0x7f030003;
-        public static final int dashboard_layout=0x7f030004;
-        public static final int options_layout=0x7f030005;
-        public static final int review_layout=0x7f030006;
-        public static final int vehicles_layout=0x7f030007;
-        public static final int video_file_item_layout=0x7f030008;
+        public static final int activity_recording_fullscreen=0x7f030002;
+        public static final int activity_splash=0x7f030003;
+        public static final int bbox_activity_layout=0x7f030004;
+        public static final int dashboard_layout=0x7f030005;
+        public static final int options_layout=0x7f030006;
+        public static final int review_layout=0x7f030007;
+        public static final int vehicles_layout=0x7f030008;
+        public static final int video_file_item_layout=0x7f030009;
     }
     public static final class menu {
         public static final int bbox=0x7f0b0000;
@@ -319,32 +323,33 @@ containing a value of this type.
         public static final int long_app_name=0x7f070016;
         /**  Example settings for Data & Sync 
          */
-        public static final int pref_header_data_sync=0x7f070027;
+        public static final int pref_header_data_sync=0x7f070028;
         /**  Strings related to Settings 
  Example General settings 
          */
-        public static final int pref_header_general=0x7f070023;
+        public static final int pref_header_general=0x7f070024;
         /**  Example settings for Notifications 
          */
-        public static final int pref_header_notifications=0x7f07002a;
-        public static final int pref_ringtone_silent=0x7f07002d;
-        public static final int pref_title_location_update_freq=0x7f070030;
-        public static final int pref_title_record_audio=0x7f070024;
-        public static final int pref_title_record_video=0x7f070025;
-        public static final int pref_title_ringtone=0x7f07002c;
-        public static final int pref_title_show_map=0x7f07002f;
-        public static final int pref_title_si_units=0x7f070031;
-        public static final int pref_title_sync_frequency=0x7f070028;
-        public static final int pref_title_system_sync_settings=0x7f070029;
-        public static final int pref_title_track_location=0x7f07002b;
-        public static final int pref_title_vibrate=0x7f07002e;
-        public static final int pref_title_video_quality=0x7f070026;
+        public static final int pref_header_notifications=0x7f07002b;
+        public static final int pref_ringtone_silent=0x7f07002e;
+        public static final int pref_title_location_update_freq=0x7f070031;
+        public static final int pref_title_record_audio=0x7f070025;
+        public static final int pref_title_record_video=0x7f070026;
+        public static final int pref_title_ringtone=0x7f07002d;
+        public static final int pref_title_show_map=0x7f070030;
+        public static final int pref_title_si_units=0x7f070032;
+        public static final int pref_title_sync_frequency=0x7f070029;
+        public static final int pref_title_system_sync_settings=0x7f07002a;
+        public static final int pref_title_track_location=0x7f07002c;
+        public static final int pref_title_vibrate=0x7f07002f;
+        public static final int pref_title_video_quality=0x7f070027;
         public static final int start=0x7f07001d;
         public static final int start_monitoring=0x7f07001f;
         public static final int stop=0x7f07001e;
-        public static final int title_activity_options=0x7f070022;
+        public static final int title_activity_options=0x7f070023;
         public static final int title_activity_playback=0x7f070020;
         public static final int title_activity_recording=0x7f070019;
+        public static final int title_activity_recording_fullscreen=0x7f070022;
         public static final int title_activity_splash=0x7f070021;
         public static final int title_activity_vehicles=0x7f07001c;
     }

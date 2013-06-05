@@ -63,7 +63,7 @@ public class BBoxActivity extends Activity {
 	}
 	
 	public void onStartRecord(View v) {
-		Intent record = new Intent(this, RecordingActivity.class);
+		Intent record = new Intent(this, RecordingFullscreenActivity.class);
 		startActivityForResult(record, REQUEST_START_RECORD);
 	}	
 	
