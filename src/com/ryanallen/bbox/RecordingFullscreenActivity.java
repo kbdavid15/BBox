@@ -1,6 +1,7 @@
 package com.ryanallen.bbox;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -200,6 +201,34 @@ public class RecordingFullscreenActivity extends Activity implements GooglePlayS
 		if (myCamera == null) {
 			initializeCamera(); // Local method to handle camera init
 		}
+		
+		//set camera params - doesn't really seem to help much
+		Camera.Parameters params = myCamera.getParameters();
+		Camera.Size bestSize = getBestPreviewSize(480, 800, params);
+		params.setPreviewSize(bestSize.width, bestSize.height);
+		myCamera.setParameters(params);
+	}
+	
+	private Camera.Size getBestPreviewSize(int width, int height, Camera.Parameters parameters) {
+		Camera.Size result=null;
+
+		for (Camera.Size size : parameters.getSupportedPreviewSizes()) {
+			if (size.width <= width && size.height <= height) {
+				if (result == null) {
+					result=size;
+				}
+				else {
+					int resultArea=result.width * result.height;
+					int newArea=size.width * size.height;
+
+						if (newArea > resultArea) {
+							result=size;
+						}
+				}
+			}
+		}
+
+		return(result);
 	}
 	
 	@Override

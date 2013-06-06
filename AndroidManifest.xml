@@ -38,19 +38,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.ryanallen.bbox.RecordingActivity"
-            android:label="@string/title_activity_recording"
-            android:parentActivityName="com.ryanallen.bbox.BBoxActivity"
-            android:screenOrientation="landscape" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.ryanallen.bbox.BBoxActivity" />
-        </activity>
-        <activity
-            android:name="com.ryanallen.bbox.VehicleActivity"
-            android:label="@string/title_activity_vehicles" >
-        </activity>
-        <activity
             android:name="com.ryanallen.bbox.OptionsActivity"
             android:label="@string/title_activity_options" >
             <meta-data
@@ -77,7 +64,8 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_recording_fullscreen"
             android:parentActivityName="com.ryanallen.bbox.BBoxActivity"
-            android:theme="@style/FullscreenTheme" >
+            android:theme="@style/FullscreenTheme"
+            android:screenOrientation="landscape" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ryanallen.bbox.BBoxActivity" />
