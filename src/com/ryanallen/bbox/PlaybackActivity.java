@@ -2,6 +2,7 @@ package com.ryanallen.bbox;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -48,21 +49,25 @@ public class PlaybackActivity extends Activity {
 	 * The instance of the {@link SystemUiHider} for this activity.
 	 */
 	private SystemUiHider mSystemUiHider;
-	
+
 	private String videoPath;
 	private VideoView mVideoView;
+	
+	private MyDbOpenHelper mDbHelper;
+	private SQLiteDatabase mSQLdB;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		// get the values from the parent activity
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 			videoPath = extras.getString(ReviewFragment.SELECTED_VIDEO_FILE);
 		}
-		
-		//Toast.makeText(this, videoPath, Toast.LENGTH_SHORT).show();
+
+		// set up the database helper
+		mDbHelper = new MyDbOpenHelper(this);
 
 		setContentView(R.layout.activity_playback);
 		setupActionBar();
@@ -76,44 +81,44 @@ public class PlaybackActivity extends Activity {
 				HIDER_FLAGS);
 		mSystemUiHider.setup();
 		mSystemUiHider
-				.setOnVisibilityChangeListener(new SystemUiHider.OnVisibilityChangeListener() {
-					// Cached values.
-					int mControlsHeight;
-					int mShortAnimTime;
+		.setOnVisibilityChangeListener(new SystemUiHider.OnVisibilityChangeListener() {
+			// Cached values.
+			int mControlsHeight;
+			int mShortAnimTime;
 
-					@Override
-					@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-					public void onVisibilityChange(boolean visible) {
-						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-							// If the ViewPropertyAnimator API is available
-							// (Honeycomb MR2 and later), use it to animate the
-							// in-layout UI controls at the bottom of the
-							// screen.
-							if (mControlsHeight == 0) {
-//								mControlsHeight = controlsView.getHeight();
-							}
-							if (mShortAnimTime == 0) {
-								mShortAnimTime = getResources().getInteger(
-										android.R.integer.config_shortAnimTime);
-							}
-//							controlsView
-//									.animate()
-//									.translationY(visible ? 0 : mControlsHeight)
-//									.setDuration(mShortAnimTime);
-						} else {
-							// If the ViewPropertyAnimator APIs aren't
-							// available, simply show or hide the in-layout UI
-							// controls.
-//							controlsView.setVisibility(visible ? View.VISIBLE
-//									: View.GONE);
-						}
-
-						if (visible && AUTO_HIDE) {
-							// Schedule a hide().
-							delayedHide(AUTO_HIDE_DELAY_MILLIS);
-						}
+			@Override
+			@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+			public void onVisibilityChange(boolean visible) {
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+					// If the ViewPropertyAnimator API is available
+					// (Honeycomb MR2 and later), use it to animate the
+					// in-layout UI controls at the bottom of the
+					// screen.
+					if (mControlsHeight == 0) {
+						//								mControlsHeight = controlsView.getHeight();
 					}
-				});
+					if (mShortAnimTime == 0) {
+						mShortAnimTime = getResources().getInteger(
+								android.R.integer.config_shortAnimTime);
+					}
+					//							controlsView
+					//									.animate()
+					//									.translationY(visible ? 0 : mControlsHeight)
+					//									.setDuration(mShortAnimTime);
+				} else {
+					// If the ViewPropertyAnimator APIs aren't
+					// available, simply show or hide the in-layout UI
+					// controls.
+					//							controlsView.setVisibility(visible ? View.VISIBLE
+					//									: View.GONE);
+				}
+
+				if (visible && AUTO_HIDE) {
+					// Schedule a hide().
+					delayedHide(AUTO_HIDE_DELAY_MILLIS);
+				}
+			}
+		});
 
 		// Set up the user interaction to manually show or hide the system UI.
 		contentView.setOnClickListener(new View.OnClickListener() {
@@ -130,18 +135,33 @@ public class PlaybackActivity extends Activity {
 		// Upon interacting with UI controls, delay any scheduled hide()
 		// operations to prevent the jarring behavior of controls going away
 		// while interacting with the UI.
-//		findViewById(R.id.dummy_button).setOnTouchListener(
-//				mDelayHideTouchListener);
-		
+		//		findViewById(R.id.dummy_button).setOnTouchListener(
+		//				mDelayHideTouchListener);
+
 		// load the video
 		mVideoView = (VideoView)findViewById(R.id.videoView1);
-		
+
 		// setup the video
 		mVideoView.setVideoPath(videoPath);
 		mVideoView.setMediaController(new MediaController(this));
-		
+
 		// start the video 
 		mVideoView.start();
+	}
+	
+	@Override
+	protected void onStop() {
+		if (mSQLdB != null) {
+			mSQLdB.close();
+		}
+		super.onStop();
+	}
+	
+	private void readDatabase() {
+		mSQLdB = mDbHelper.getReadableDatabase();
+		
+		// find the data associated with the chosen video
+		
 	}
 
 	@Override
