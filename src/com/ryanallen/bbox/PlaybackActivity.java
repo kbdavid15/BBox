@@ -1,7 +1,12 @@
 package com.ryanallen.bbox;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.FragmentManager;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,6 +18,8 @@ import android.view.View;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.ryanallen.bbox.util.SystemUiHider;
 
 /**
@@ -52,9 +59,14 @@ public class PlaybackActivity extends Activity {
 
 	private String videoPath;
 	private VideoView mVideoView;
-	
+	private FragmentManager fragmentManager;
+	private MapFragment mapFragment;
+	private GoogleMap map; 
+
 	private MyDbOpenHelper mDbHelper;
-	private SQLiteDatabase mSQLdB;
+	private SQLiteDatabase db;
+	private String[] allColumns = { MyDbOpenHelper.COLUMN_ID, MyDbOpenHelper.COLUMN_FILENAME, MyDbOpenHelper.COLUMN_LATITUDE,
+			MyDbOpenHelper.COLUMN_LONGITUDE, MyDbOpenHelper.COLUMN_SPEED, MyDbOpenHelper.COLUMN_TIMESTAMP };
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,8 +84,14 @@ public class PlaybackActivity extends Activity {
 		setContentView(R.layout.activity_playback);
 		setupActionBar();
 
+		fragmentManager = getFragmentManager();
+
 		//final View controlsView = findViewById(R.id.fullscreen_content_controls);
 		final View contentView = findViewById(R.id.videoView1);
+		mapFragment = (MapFragment)fragmentManager.findFragmentById(R.id.mapFragment);
+		
+		List<LocationCoordinate> allPoints = getAllPoints();
+		configureMapFragment();
 
 		// Set up an instance of SystemUiHider to control the system UI for
 		// this activity.
@@ -148,20 +166,33 @@ public class PlaybackActivity extends Activity {
 		// start the video 
 		mVideoView.start();
 	}
-	
+
 	@Override
 	protected void onStop() {
-		if (mSQLdB != null) {
-			mSQLdB.close();
+		if (db != null) {
+			db.close();
 		}
 		super.onStop();
 	}
-	
-	private void readDatabase() {
-		mSQLdB = mDbHelper.getReadableDatabase();
-		
+
+	public List<LocationCoordinate> getAllPoints() {
+		List<LocationCoordinate> points = new ArrayList<LocationCoordinate>();
+		db = mDbHelper.getReadableDatabase();
+
 		// find the data associated with the chosen video
-		
+		String selectCriteria = MyDbOpenHelper.COLUMN_FILENAME + " = '" + videoPath + "'";
+		Cursor cursor = db.query(MyDbOpenHelper.TABLE_NAME, allColumns, 
+				selectCriteria, null, null, null, null);
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			points.add(new LocationCoordinate(cursor));
+			cursor.moveToNext();
+		}
+		return points;
+	}
+
+	private void configureMapFragment() {
+		map = mapFragment.getMap();
 	}
 
 	@Override

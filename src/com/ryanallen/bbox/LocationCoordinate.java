@@ -1,5 +1,7 @@
 package com.ryanallen.bbox;
 
+import android.database.Cursor;
+
 public class LocationCoordinate {
 	private long id;
 	private String fileName;
@@ -13,7 +15,15 @@ public class LocationCoordinate {
 		this.longitude = longitude;
 		this.speed = speed;
 		this.unix_time = unix_time;
-	}	
+	}
+	public LocationCoordinate(Cursor cursor) {
+		this.id = cursor.getLong(0);
+		this.fileName = cursor.getString(1);
+		this.latitude = cursor.getDouble(2);
+		this.longitude = cursor.getDouble(3);
+		this.speed = cursor.getDouble(4);
+		this.unix_time = cursor.getInt(5);
+	}
 	
 	public long getId() {
 		return id;
