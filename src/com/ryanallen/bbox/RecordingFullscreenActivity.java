@@ -13,9 +13,11 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.hardware.Camera;
 import android.location.Location;
 import android.media.CamcorderProfile;
@@ -75,6 +77,7 @@ public class RecordingFullscreenActivity extends Activity implements GooglePlayS
 	private FrameLayout mFrameLayoutPreview;
 	private MediaRecorder mMediaRecorder;
 	private SharedPreferences settings;
+	private String videoFilePath = null;
 	
 	private ConnectionResult connectionResult;
 	public static final int LOCATION_UPDATE_INTERVAL = 5000;
@@ -84,6 +87,9 @@ public class RecordingFullscreenActivity extends Activity implements GooglePlayS
     LocationRequest mLocationRequest;
     LocationClient mLocationClient;
     boolean mUpdatesRequested;
+    
+    private MyDbOpenHelper mDbHelper;
+    private SQLiteDatabase mSQLdb;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -101,12 +107,10 @@ public class RecordingFullscreenActivity extends Activity implements GooglePlayS
         // Set the fastest update interval to 1 second
         mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
         //TODO use location update freq from settings
-        
-        /*
-         * Create a new location client, using the enclosing class to
-         * handle callbacks.
-         */
         mLocationClient = new LocationClient(this,this,this);
+        
+        // store the location data in the database
+        mDbHelper = new MyDbOpenHelper(this);
 
 		// restore prefs
 		settings = PreferenceManager.getDefaultSharedPreferences(this);
@@ -192,9 +196,6 @@ public class RecordingFullscreenActivity extends Activity implements GooglePlayS
 	public void onResume() {
 		super.onResume();
 
-		// start the Location Tracking service
-		startService(new Intent(this, LocationTrackerService.class));
-
 		// Get the Camera instance as the activity achieves full user focus
 		if (myCamera == null) {
 			initializeCamera(); // Local method to handle camera init
@@ -254,8 +255,8 @@ public class RecordingFullscreenActivity extends Activity implements GooglePlayS
 				Toast.makeText(this, "The selected video quality is not available. Using highest available quality.", Toast.LENGTH_LONG).show();
 				mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH));
 			}
-
-			mMediaRecorder.setOutputFile(Media.getOutputMediaFile(Media.MEDIA_TYPE_VIDEO).toString());
+			videoFilePath = Media.getOutputMediaFile(Media.MEDIA_TYPE_VIDEO).toString();
+			mMediaRecorder.setOutputFile(videoFilePath);
 			mMediaRecorder.setPreviewDisplay(mPreview.getHolder().getSurface());
 
 			// prepare the media recorder
@@ -352,6 +353,7 @@ public class RecordingFullscreenActivity extends Activity implements GooglePlayS
 		mHideHandler.removeCallbacks(mHideRunnable);
 		mHideHandler.postDelayed(mHideRunnable, delayMillis);
 	}
+	
 	/**
      * Called by Location Services if the attempt to
      * Location Services fails.
@@ -414,6 +416,17 @@ public class RecordingFullscreenActivity extends Activity implements GooglePlayS
                 Double.toString(location.getLatitude()) + "," +
                 Double.toString(location.getLongitude());
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+        
+        // store the location in the database
+        mSQLdb = mDbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(MyDbOpenHelper.COLUMN_FILENAME, videoFilePath);
+        values.put(MyDbOpenHelper.COLUMN_LATITUDE, location.getLatitude());
+        values.put(MyDbOpenHelper.COLUMN_LONGITUDE, location.getLongitude());
+        values.put(MyDbOpenHelper.COLUMN_SPEED, location.getSpeed());
+        values.put(MyDbOpenHelper.COLUMN_TIMESTAMP, location.getTime()/1000);
+        
+        mSQLdb.insert(MyDbOpenHelper.TABLE_NAME, null, values);        
 	}
 	
 	@Override
@@ -432,6 +445,7 @@ public class RecordingFullscreenActivity extends Activity implements GooglePlayS
          * considered "dead".
          */
         mLocationClient.disconnect();
+        mSQLdb.close();
         super.onStop();
 	}
 
