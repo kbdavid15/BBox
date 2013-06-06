@@ -61,7 +61,7 @@ public class RecordingFullscreenActivity extends Activity implements GooglePlayS
 	 * If set, will toggle the system UI visibility upon interaction. Otherwise,
 	 * will show the system UI visibility upon interaction.
 	 */
-	private static final boolean TOGGLE_ON_CLICK = false;
+	//private static final boolean TOGGLE_ON_CLICK = false;
 
 	/**
 	 * The flags to pass to {@link SystemUiHider#getInstance}.
@@ -204,7 +204,7 @@ public class RecordingFullscreenActivity extends Activity implements GooglePlayS
 		
 		//set camera params - doesn't really seem to help much
 		Camera.Parameters params = myCamera.getParameters();
-		Camera.Size bestSize = getBestPreviewSize(480, 800, params);
+		Camera.Size bestSize = getBestPreviewSize(1080, 1920, params);
 		params.setPreviewSize(bestSize.width, bestSize.height);
 		myCamera.setParameters(params);
 	}
