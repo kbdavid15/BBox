@@ -6,6 +6,7 @@ import com.ryanallen.bbox.util.SystemUiHider;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
@@ -152,7 +153,11 @@ public class RecordingFullscreenActivity extends Activity {
 	
 	@Override
 	public void onResume() {
-		super.onResume();		
+		super.onResume();
+		
+		// start the Location Tracking service
+		startService(new Intent(this, LocationTrackerService.class));
+		
 		// Get the Camera instance as the activity achieves full user focus
 	    if (myCamera == null) {
 	        initializeCamera(); // Local method to handle camera init
@@ -186,7 +191,7 @@ public class RecordingFullscreenActivity extends Activity {
 	}
 	
 	public void captureButton_Click(View v) {
-	    if (((ToggleButton)v).isChecked()) {
+	    if (((ToggleButton)v).isChecked()) {	    	
 	    	// start recording
 	    	mMediaRecorder = new MediaRecorder();
 	    	myCamera.unlock();			
@@ -218,7 +223,7 @@ public class RecordingFullscreenActivity extends Activity {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}			
+			}
 	    } else {
 	    	// stop recording
 	    	mMediaRecorder.stop();

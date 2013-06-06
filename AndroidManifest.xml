@@ -82,6 +82,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ryanallen.bbox.BBoxActivity" />
         </activity>
+        <service 
+            android:name="com.ryanallen.bbox.LocationTrackerService"
+            android:label="@string/title_service_location" />
     </application>
 
 </manifest>
