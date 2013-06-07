@@ -59,7 +59,7 @@
             android:label="@string/title_activity_playback"
             android:parentActivityName="com.ryanallen.bbox.BBoxActivity"
             android:screenOrientation="landscape"
-            android:theme="@style/FullscreenTheme" >
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ryanallen.bbox.BBoxActivity" />
