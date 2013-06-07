@@ -7,24 +7,22 @@
     <!--
          The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
-         TextureView, etc.
+         TextureView, etc.
     -->
+
     <VideoView
-            android:id="@+id/videoView1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+        android:id="@+id/videoView1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <!--
          This FrameLayout insets its children based on system windows using
-         android:fitsSystemWindows.
+         android:fitsSystemWindows.
     -->
-
-
-
-        <fragment
-		    class="com.google.android.gms.maps.MapFragment"
-		    android:layout_width="200dp"
-		    android:layout_height="150dp" 
-		    android:id="@+id/mapFragment" />
-
+    <fragment
+        android:id="@+id/mapFragment"
+        android:layout_width="200dp"
+        android:layout_height="150dp"
+        class="com.google.android.gms.maps.MapFragment" />
+    
 </FrameLayout>

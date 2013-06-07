@@ -33,7 +33,7 @@ public class PlaybackActivity extends Activity {
 	 * Whether or not the system UI should be auto-hidden after
 	 * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
 	 */
-	private static final boolean AUTO_HIDE = true;
+	private static final boolean AUTO_HIDE = false;
 
 	/**
 	 * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after
@@ -82,24 +82,22 @@ public class PlaybackActivity extends Activity {
 		mDbHelper = new MyDbOpenHelper(this);
 
 		setContentView(R.layout.activity_playback);
-		setupActionBar();
+		//setupActionBar();
 
 		fragmentManager = getFragmentManager();
 
 		//final View controlsView = findViewById(R.id.fullscreen_content_controls);
 		final View contentView = findViewById(R.id.videoView1);
 		mapFragment = (MapFragment)fragmentManager.findFragmentById(R.id.mapFragment);
-		
+
 		List<LocationCoordinate> allPoints = getAllPoints();
 		configureMapFragment();
 
 		// Set up an instance of SystemUiHider to control the system UI for
 		// this activity.
-		mSystemUiHider = SystemUiHider.getInstance(this, contentView,
-				HIDER_FLAGS);
+		mSystemUiHider = SystemUiHider.getInstance(this, contentView,HIDER_FLAGS);
 		mSystemUiHider.setup();
-		mSystemUiHider
-		.setOnVisibilityChangeListener(new SystemUiHider.OnVisibilityChangeListener() {
+		mSystemUiHider.setOnVisibilityChangeListener(new SystemUiHider.OnVisibilityChangeListener() {
 			// Cached values.
 			int mControlsHeight;
 			int mShortAnimTime;

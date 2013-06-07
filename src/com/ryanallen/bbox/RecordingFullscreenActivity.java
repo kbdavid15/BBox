@@ -1,14 +1,6 @@
 package com.ryanallen.bbox;
 
 import java.io.IOException;
-import java.util.List;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.location.LocationClient;
-import com.google.android.gms.location.LocationRequest;
-import com.ryanallen.bbox.util.SystemUiHider;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -27,14 +19,21 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.v4.app.NavUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-import android.support.v4.app.NavUtils;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationRequest;
+import com.ryanallen.bbox.util.SystemUiHider;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
