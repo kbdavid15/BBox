@@ -13,8 +13,11 @@ import android.view.MenuItem;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 /**
  *
@@ -25,7 +28,8 @@ public class PlaybackActivity extends Activity {
 	private VideoView mVideoView;
 	private FragmentManager fragmentManager;
 	private MapFragment mapFragment;
-	private GoogleMap map; 
+	private GoogleMap map;
+	private List<LocationCoordinate> allPoints;
 
 	private MyDbOpenHelper mDbHelper;
 	private SQLiteDatabase db;
@@ -35,6 +39,12 @@ public class PlaybackActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		setContentView(R.layout.activity_playback);
+		
+		// get the height of the screen and set the map to half that size
+//		Display display = ((WindowManager)getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+//		int height = display.getHeight();
 
 		// get the values from the parent activity
 		Bundle extras = getIntent().getExtras();
@@ -43,25 +53,25 @@ public class PlaybackActivity extends Activity {
 		}
 
 		// set up the database helper
-		mDbHelper = new MyDbOpenHelper(this);
-
-		setContentView(R.layout.activity_playback);
+		mDbHelper = new MyDbOpenHelper(this);		
 
 		fragmentManager = getFragmentManager();
 		mapFragment = (MapFragment)fragmentManager.findFragmentById(R.id.mapFragment);
 
-		List<LocationCoordinate> allPoints = getAllPoints();
-		configureMapFragment();
+		allPoints = getAllPoints();
+		
 
 		// load the video
 		mVideoView = (VideoView)findViewById(R.id.videoView1);
-
+		
 		// setup the video
 		mVideoView.setVideoPath(videoPath);
 		mVideoView.setMediaController(new MediaController(this));
 
 		// start the video 
 		mVideoView.start();
+		
+		configureMapFragment();
 	}
 
 	@Override
@@ -90,6 +100,9 @@ public class PlaybackActivity extends Activity {
 
 	private void configureMapFragment() {
 		map = mapFragment.getMap();
+		LatLng point = new LatLng(allPoints.get(0).getLatitude(), allPoints.get(0).getLongitude());
+		map.addMarker(new MarkerOptions().position(point));
+		map.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 15));
 	}
 
 	@Override

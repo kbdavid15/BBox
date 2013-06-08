@@ -53,13 +53,21 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ryanallen.bbox.BBoxActivity" />
         </activity>
-        <activity
+        <!-- <activity
             android:name="com.ryanallen.bbox.PlaybackActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_playback"
             android:parentActivityName="com.ryanallen.bbox.BBoxActivity"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.ryanallen.bbox.BBoxActivity" />
+        </activity> -->
+        <activity
+            android:name="com.ryanallen.bbox.PlaybackActivity"
+            android:label="@string/title_activity_playback"
+            android:parentActivityName="com.ryanallen.bbox.BBoxActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ryanallen.bbox.BBoxActivity" />
