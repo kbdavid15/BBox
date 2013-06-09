@@ -67,6 +67,7 @@
         <activity
             android:name="com.ryanallen.bbox.PlaybackActivity"
             android:label="@string/title_activity_playback"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:parentActivityName="com.ryanallen.bbox.BBoxActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -79,11 +80,10 @@
         </activity>
         <activity
             android:name="com.ryanallen.bbox.RecordingFullscreenActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_recording_fullscreen"
             android:parentActivityName="com.ryanallen.bbox.BBoxActivity"
             android:screenOrientation="landscape"
-            android:theme="@style/FullscreenTheme" >
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ryanallen.bbox.BBoxActivity" />

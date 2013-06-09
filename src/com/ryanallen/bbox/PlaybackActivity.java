@@ -5,11 +5,13 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
@@ -41,10 +43,6 @@ public class PlaybackActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.activity_playback);
-		
-		// get the height of the screen and set the map to half that size
-//		Display display = ((WindowManager)getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-//		int height = display.getHeight();
 
 		// get the values from the parent activity
 		Bundle extras = getIntent().getExtras();
@@ -60,7 +58,6 @@ public class PlaybackActivity extends Activity {
 
 		allPoints = getAllPoints();
 		
-
 		// load the video
 		mVideoView = (VideoView)findViewById(R.id.videoView1);
 		
@@ -73,7 +70,25 @@ public class PlaybackActivity extends Activity {
 		
 		configureMapFragment();
 	}
-
+	
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		WindowManager.LayoutParams attrs = getWindow().getAttributes();
+		switch (newConfig.orientation) {
+		case Configuration.ORIENTATION_LANDSCAPE:
+			// go into fullscreen mode
+		    attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+		    getWindow().setAttributes(attrs);
+			break;
+		case Configuration.ORIENTATION_PORTRAIT:
+			// go non-full screen
+		    attrs.flags &= (~WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		    getWindow().setAttributes(attrs);
+			break;
+		}
+	}
+	
 	@Override
 	protected void onStop() {
 		if (db != null) {
@@ -109,8 +124,6 @@ public class PlaybackActivity extends Activity {
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
 	}
-
-
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
