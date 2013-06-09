@@ -11,6 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.MediaController;
 import android.widget.VideoView;
@@ -41,6 +42,22 @@ public class PlaybackActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		// check the orientation
+		Configuration config = getResources().getConfiguration();
+		WindowManager.LayoutParams attrs = getWindow().getAttributes();
+		switch (config.orientation) {
+		case Configuration.ORIENTATION_LANDSCAPE:
+			// go into fullscreen mode
+		    attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+		    requestWindowFeature(Window.FEATURE_NO_TITLE);
+		    getWindow().setAttributes(attrs);
+			break;
+		case Configuration.ORIENTATION_PORTRAIT:
+			// go non-full screen
+		    attrs.flags &= (~WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		    getWindow().setAttributes(attrs);
+			break;
+		}
 		
 		setContentView(R.layout.activity_playback);
 
@@ -72,29 +89,16 @@ public class PlaybackActivity extends Activity {
 	}
 	
 	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-		super.onConfigurationChanged(newConfig);
-		WindowManager.LayoutParams attrs = getWindow().getAttributes();
-		switch (newConfig.orientation) {
-		case Configuration.ORIENTATION_LANDSCAPE:
-			// go into fullscreen mode
-		    attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
-		    getWindow().setAttributes(attrs);
-			break;
-		case Configuration.ORIENTATION_PORTRAIT:
-			// go non-full screen
-		    attrs.flags &= (~WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		    getWindow().setAttributes(attrs);
-			break;
-		}
+	protected void onStart() {
+		super.onStart();
 	}
 	
 	@Override
 	protected void onStop() {
+		super.onStop();
 		if (db != null) {
 			db.close();
-		}
-		super.onStop();
+		}		
 	}
 
 	public List<LocationCoordinate> getAllPoints() {

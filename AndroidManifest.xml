@@ -67,7 +67,6 @@
         <activity
             android:name="com.ryanallen.bbox.PlaybackActivity"
             android:label="@string/title_activity_playback"
-            android:configChanges="orientation|keyboardHidden|screenSize"
             android:parentActivityName="com.ryanallen.bbox.BBoxActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
