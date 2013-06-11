@@ -38,46 +38,46 @@ import com.ryanallen.bbox.util.SystemUiHider;
  * @see SystemUiHider
  */
 public class RecordingFullscreenActivity extends Activity implements GooglePlayServicesClient.ConnectionCallbacks, 
-																	 GooglePlayServicesClient.OnConnectionFailedListener,
-																	 com.google.android.gms.location.LocationListener {
+GooglePlayServicesClient.OnConnectionFailedListener,
+com.google.android.gms.location.LocationListener {
 	private Camera myCamera;
 	private CameraPreview mPreview;
 	private FrameLayout mFrameLayoutPreview;
 	private MediaRecorder mMediaRecorder;
 	private SharedPreferences settings;
 	private String videoFilePath = null;
-	
+
 	private ConnectionResult connectionResult;
 	public static final int LOCATION_UPDATE_INTERVAL = 1000;
 	// The fastest update frequency, in milliseconds
-    private static final int FASTEST_INTERVAL = 1000;
-    // Define an object that holds accuracy and frequency parameters
-    LocationRequest mLocationRequest;
-    LocationClient mLocationClient;
-    boolean mUpdatesRequested;
-    
-    private MyDbOpenHelper mDbHelper;
-    private SQLiteDatabase mSQLdb;
+	private static final int FASTEST_INTERVAL = 1000;
+	// Define an object that holds accuracy and frequency parameters
+	LocationRequest mLocationRequest;
+	LocationClient mLocationClient;
+	boolean mUpdatesRequested;
+
+	private MyDbOpenHelper mDbHelper;
+	private SQLiteDatabase mSQLdb;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_recording_fullscreen);
-		
+
 		// location stuff
 		mLocationRequest = LocationRequest.create();
 		// Use high accuracy
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        // Set the update interval to 5 seconds
-        mLocationRequest.setInterval(LOCATION_UPDATE_INTERVAL);
-        // Set the fastest update interval to 1 second
-        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
-        //TODO use location update freq from settings
-        mLocationClient = new LocationClient(this,this,this);
-        
-        // store the location data in the database
-        mDbHelper = new MyDbOpenHelper(this);
+		mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+		// Set the update interval to 5 seconds
+		mLocationRequest.setInterval(LOCATION_UPDATE_INTERVAL);
+		// Set the fastest update interval to 1 second
+		mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+		//TODO use location update freq from settings
+		mLocationClient = new LocationClient(this,this,this);
+
+		// store the location data in the database
+		mDbHelper = new MyDbOpenHelper(this);
 
 		// restore prefs
 		settings = PreferenceManager.getDefaultSharedPreferences(this);
@@ -96,42 +96,22 @@ public class RecordingFullscreenActivity extends Activity implements GooglePlayS
 		if (myCamera == null) {
 			initializeCamera(); // Local method to handle camera init
 		}
-		
+		//TODO look into why the integer array of values didn't work
+		String quality = settings.getString("video_quality", String.valueOf(CamcorderProfile.QUALITY_HIGH));
+		CamcorderProfile profile = CamcorderProfile.get(Integer.parseInt(quality));
+
 		//set camera params - doesn't really seem to help much
 		Camera.Parameters params = myCamera.getParameters();
-		Camera.Size bestSize = getBestPreviewSize(1080, 1920, params);
-		params.setPreviewSize(bestSize.width, bestSize.height);
+		params.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
 		myCamera.setParameters(params);
 	}
-	
-	private Camera.Size getBestPreviewSize(int width, int height, Camera.Parameters parameters) {
-		Camera.Size result=null;
 
-		for (Camera.Size size : parameters.getSupportedPreviewSizes()) {
-			if (size.width <= width && size.height <= height) {
-				if (result == null) {
-					result=size;
-				}
-				else {
-					int resultArea=result.width * result.height;
-					int newArea=size.width * size.height;
-
-						if (newArea > resultArea) {
-							result=size;
-						}
-				}
-			}
-		}
-
-		return(result);
-	}
-	
 	@Override
 	protected void onStart() {
 		super.onStart();
 		mLocationClient.connect();
 	}
-	
+
 	private boolean initializeCamera() {
 		// create an instance of camera
 		myCamera = getCameraInstance();
@@ -158,8 +138,6 @@ public class RecordingFullscreenActivity extends Activity implements GooglePlayS
 		}
 	}
 	
-	
-
 	public void captureButton_Click(View v) {
 		if (((ToggleButton)v).isChecked()) {	    	
 			// start recording
@@ -234,101 +212,101 @@ public class RecordingFullscreenActivity extends Activity implements GooglePlayS
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 	/**
-     * Called by Location Services if the attempt to
-     * Location Services fails.
-     */
+	 * Called by Location Services if the attempt to
+	 * Location Services fails.
+	 */
 	@Override
 	public void onConnectionFailed(ConnectionResult connectionResult) {
 		this.connectionResult = connectionResult;
 		/*
-         * Google Play services can resolve some errors it detects.
-         * If the error has a resolution, try sending an Intent to
-         * start a Google Play services activity that can resolve
-         * error.
-         */
-        if (connectionResult.hasResolution()) {
-            try {
-                // Start an Activity that tries to resolve the error
-                connectionResult.startResolutionForResult(
-                        this,
-                        CONNECTION_FAILURE_RESOLUTION_REQUEST);
-                /*
-                * Thrown if Google Play services canceled the original
-                * PendingIntent
-                */
-            } catch (IntentSender.SendIntentException e) {
-                // Log the error
-                e.printStackTrace();
-            }
-        } else {
-            /*
-             * If no resolution is available, display a dialog to the
-             * user with the error.
-             */
-            showDialog(connectionResult.getErrorCode());
-        }
+		 * Google Play services can resolve some errors it detects.
+		 * If the error has a resolution, try sending an Intent to
+		 * start a Google Play services activity that can resolve
+		 * error.
+		 */
+		if (connectionResult.hasResolution()) {
+			try {
+				// Start an Activity that tries to resolve the error
+				connectionResult.startResolutionForResult(
+						this,
+						CONNECTION_FAILURE_RESOLUTION_REQUEST);
+				/*
+				 * Thrown if Google Play services canceled the original
+				 * PendingIntent
+				 */
+			} catch (IntentSender.SendIntentException e) {
+				// Log the error
+				e.printStackTrace();
+			}
+		} else {
+			/*
+			 * If no resolution is available, display a dialog to the
+			 * user with the error.
+			 */
+			showDialog(connectionResult.getErrorCode());
+		}
 
 	}
 	/**
-     * Called by Location Services when the request to connect the
-     * client finishes successfully. At this point, you can
-     * request the current location or start periodic updates
-     */
+	 * Called by Location Services when the request to connect the
+	 * client finishes successfully. At this point, you can
+	 * request the current location or start periodic updates
+	 */
 	@Override
 	public void onConnected(Bundle dataBundle) {
-        mLocationClient.requestLocationUpdates(mLocationRequest, this);
+		mLocationClient.requestLocationUpdates(mLocationRequest, this);
 	}
 	/**
-     * Called by Location Services if the connection to the
-     * location client drops because of an error.
-     */
+	 * Called by Location Services if the connection to the
+	 * location client drops because of an error.
+	 */
 	@Override
 	public void onDisconnected() {
 		// Display the connection status
-        Toast.makeText(this, "Disconnected. Please re-connect.", Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, "Disconnected. Please re-connect.", Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
 	public void onLocationChanged(Location location) {
 		// Report to the UI that the location was updated
-        String msg = "Updated Location: " +
-                Double.toString(location.getLatitude()) + "," +
-                Double.toString(location.getLongitude());
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-        
-        // store the location in the database
-        mSQLdb = mDbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(MyDbOpenHelper.COLUMN_FILENAME, videoFilePath);
-        values.put(MyDbOpenHelper.COLUMN_LATITUDE, location.getLatitude());
-        values.put(MyDbOpenHelper.COLUMN_LONGITUDE, location.getLongitude());
-        values.put(MyDbOpenHelper.COLUMN_SPEED, location.getSpeed());
-        values.put(MyDbOpenHelper.COLUMN_ALTITUDE, location.getAltitude());
-        values.put(MyDbOpenHelper.COLUMN_TIMESTAMP, location.getTime());
-        
-        mSQLdb.insert(MyDbOpenHelper.TABLE_NAME, null, values);        
+		String msg = "Updated Location: " +
+				Double.toString(location.getLatitude()) + "," +
+				Double.toString(location.getLongitude());
+		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+
+		// store the location in the database
+		mSQLdb = mDbHelper.getWritableDatabase();
+		ContentValues values = new ContentValues();
+		values.put(MyDbOpenHelper.COLUMN_FILENAME, videoFilePath);
+		values.put(MyDbOpenHelper.COLUMN_LATITUDE, location.getLatitude());
+		values.put(MyDbOpenHelper.COLUMN_LONGITUDE, location.getLongitude());
+		values.put(MyDbOpenHelper.COLUMN_SPEED, location.getSpeed());
+		values.put(MyDbOpenHelper.COLUMN_ALTITUDE, location.getAltitude());
+		values.put(MyDbOpenHelper.COLUMN_TIMESTAMP, location.getTime());
+
+		mSQLdb.insert(MyDbOpenHelper.TABLE_NAME, null, values);        
 	}
-	
+
 	@Override
 	protected void onStop() {
 		// If the client is connected
-        if (mLocationClient.isConnected()) {
-            /*
-             * Remove location updates for a listener.
-             * The current Activity is the listener, so
-             * the argument is "this".
-             */
-            mLocationClient.removeLocationUpdates(this);
-        }
-        /*
-         * After disconnect() is called, the client is
-         * considered "dead".
-         */
-        mLocationClient.disconnect();
-        mSQLdb.close();
-        super.onStop();
+		if (mLocationClient.isConnected()) {
+			/*
+			 * Remove location updates for a listener.
+			 * The current Activity is the listener, so
+			 * the argument is "this".
+			 */
+			mLocationClient.removeLocationUpdates(this);
+		}
+		/*
+		 * After disconnect() is called, the client is
+		 * considered "dead".
+		 */
+		mLocationClient.disconnect();
+		mSQLdb.close();
+		super.onStop();
 	}
 
 	/*
@@ -374,41 +352,41 @@ public class RecordingFullscreenActivity extends Activity implements GooglePlayS
 			}
 		}
 	}
-	
+
 	private boolean servicesConnected() {
-        // Check that Google Play services is available
-        int resultCode =
-                GooglePlayServicesUtil.
-                        isGooglePlayServicesAvailable(this);
-        // If Google Play services is available
-        if (ConnectionResult.SUCCESS == resultCode) {
-            // In debug mode, log the status
-            Log.d("Location Updates",
-                    "Google Play services is available.");
-            // Continue
-            return true;
-        // Google Play services was not available for some reason
-        } else {
-            // Get the error code
-            int errorCode = connectionResult.getErrorCode();
-            // Get the error dialog from Google Play services
-            Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(
-                    errorCode,
-                    this,
-                    CONNECTION_FAILURE_RESOLUTION_REQUEST);
-            // If Google Play services can provide an error dialog
-            if (errorDialog != null) {
-                // Create a new DialogFragment for the error dialog
-                ErrorDialogFragment errorFragment =
-                        new ErrorDialogFragment();
-                // Set the dialog in the DialogFragment
-                errorFragment.setDialog(errorDialog);
-                // Show the error dialog in the DialogFragment
-                errorFragment.show(
-                        getFragmentManager(),
-                        "Location Updates");
-            }
-            return false;
-        }
-    }
+		// Check that Google Play services is available
+		int resultCode =
+				GooglePlayServicesUtil.
+				isGooglePlayServicesAvailable(this);
+		// If Google Play services is available
+		if (ConnectionResult.SUCCESS == resultCode) {
+			// In debug mode, log the status
+			Log.d("Location Updates",
+					"Google Play services is available.");
+			// Continue
+			return true;
+			// Google Play services was not available for some reason
+		} else {
+			// Get the error code
+			int errorCode = connectionResult.getErrorCode();
+			// Get the error dialog from Google Play services
+			Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(
+					errorCode,
+					this,
+					CONNECTION_FAILURE_RESOLUTION_REQUEST);
+			// If Google Play services can provide an error dialog
+			if (errorDialog != null) {
+				// Create a new DialogFragment for the error dialog
+				ErrorDialogFragment errorFragment =
+						new ErrorDialogFragment();
+				// Set the dialog in the DialogFragment
+				errorFragment.setDialog(errorDialog);
+				// Show the error dialog in the DialogFragment
+				errorFragment.show(
+						getFragmentManager(),
+						"Location Updates");
+			}
+			return false;
+		}
+	}
 }
