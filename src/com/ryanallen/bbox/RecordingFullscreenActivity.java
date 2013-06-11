@@ -2,7 +2,6 @@ package com.ryanallen.bbox;
 
 import java.io.IOException;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -15,14 +14,11 @@ import android.hardware.Camera;
 import android.location.Location;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -52,7 +48,7 @@ public class RecordingFullscreenActivity extends Activity implements GooglePlayS
 	private String videoFilePath = null;
 	
 	private ConnectionResult connectionResult;
-	public static final int LOCATION_UPDATE_INTERVAL = 5000;
+	public static final int LOCATION_UPDATE_INTERVAL = 1000;
 	// The fastest update frequency, in milliseconds
     private static final int FASTEST_INTERVAL = 1000;
     // Define an object that holds accuracy and frequency parameters
@@ -309,7 +305,8 @@ public class RecordingFullscreenActivity extends Activity implements GooglePlayS
         values.put(MyDbOpenHelper.COLUMN_LATITUDE, location.getLatitude());
         values.put(MyDbOpenHelper.COLUMN_LONGITUDE, location.getLongitude());
         values.put(MyDbOpenHelper.COLUMN_SPEED, location.getSpeed());
-        values.put(MyDbOpenHelper.COLUMN_TIMESTAMP, location.getTime()/1000);
+        values.put(MyDbOpenHelper.COLUMN_ALTITUDE, location.getAltitude());
+        values.put(MyDbOpenHelper.COLUMN_TIMESTAMP, location.getTime());
         
         mSQLdb.insert(MyDbOpenHelper.TABLE_NAME, null, values);        
 	}

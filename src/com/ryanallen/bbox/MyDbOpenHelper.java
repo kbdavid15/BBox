@@ -7,14 +7,17 @@ import android.util.Log;
 
 public class MyDbOpenHelper extends SQLiteOpenHelper {
 	private static final String DB_NAME = "locations.db";
-	private static final int DB_VERSION = 2;
+	private static final int DB_VERSION = 3;
 	public static final String TABLE_NAME = "videolocation";
 	public static final String COLUMN_ID = "_id";
 	public static final String COLUMN_FILENAME = "filename";
 	public static final String COLUMN_LATITUDE = "latitude";
 	public static final String COLUMN_LONGITUDE = "longitude";
+	/** Speed in meters/second */
 	public static final String COLUMN_SPEED = "speed";
-	/** Time is stored in UNIX time as an integer */
+	/** Altitude if available, in meters above sea level. If this location does not have an altitude then 0.0 is returned. */
+	public static final String COLUMN_ALTITUDE = "altitude";
+	/** UTC time of this fix, in milliseconds since January 1, 1970 */
 	public static final String COLUMN_TIMESTAMP = "timestamp";
 
 	private static final String CREATE_TABLE = 
@@ -24,6 +27,7 @@ public class MyDbOpenHelper extends SQLiteOpenHelper {
 					COLUMN_LATITUDE + " real not null, " +
 					COLUMN_LONGITUDE + " real not null, " +
 					COLUMN_SPEED + " real not null, " +
+					COLUMN_ALTITUDE + " real not null, " +
 					COLUMN_TIMESTAMP + " integer not null);";
 
 	public MyDbOpenHelper(Context context) {

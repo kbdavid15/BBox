@@ -37,7 +37,7 @@ public class PlaybackActivity extends Activity {
 	private MyDbOpenHelper mDbHelper;
 	private SQLiteDatabase db;
 	private String[] allColumns = { MyDbOpenHelper.COLUMN_ID, MyDbOpenHelper.COLUMN_FILENAME, MyDbOpenHelper.COLUMN_LATITUDE,
-			MyDbOpenHelper.COLUMN_LONGITUDE, MyDbOpenHelper.COLUMN_SPEED, MyDbOpenHelper.COLUMN_TIMESTAMP };
+			MyDbOpenHelper.COLUMN_LONGITUDE, MyDbOpenHelper.COLUMN_SPEED, MyDbOpenHelper.COLUMN_ALTITUDE, MyDbOpenHelper.COLUMN_TIMESTAMP };
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
