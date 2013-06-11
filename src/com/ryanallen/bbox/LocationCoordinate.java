@@ -4,6 +4,8 @@ import java.util.Date;
 
 import android.database.Cursor;
 
+import com.google.android.gms.maps.model.LatLng;
+
 public class LocationCoordinate {
 	private long id;
 	private String fileName;
@@ -80,5 +82,8 @@ public class LocationCoordinate {
 	}
 	public void setDateTime(Date date) {
 		this.unix_time = date.getTime();
+	}
+	public LatLng getLatLng() {
+		return new LatLng(latitude, longitude);
 	}
 }

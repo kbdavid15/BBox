@@ -1,7 +1,6 @@
 package com.ryanallen.bbox;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import android.app.Activity;
 import android.app.FragmentManager;
@@ -16,12 +15,6 @@ import android.view.WindowManager;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-
 /**
  *
  */
@@ -30,9 +23,8 @@ public class PlaybackActivity extends Activity {
 	private String videoPath;
 	private VideoView mVideoView;
 	private FragmentManager fragmentManager;
-	private MapFragment mapFragment;
-	private GoogleMap map;
-	private List<LocationCoordinate> allPoints;
+	private VideoMapFragment mapFragment;
+	private ArrayList<LocationCoordinate> allPoints;
 
 	private MyDbOpenHelper mDbHelper;
 	private SQLiteDatabase db;
@@ -71,7 +63,7 @@ public class PlaybackActivity extends Activity {
 		mDbHelper = new MyDbOpenHelper(this);		
 
 		fragmentManager = getFragmentManager();
-		mapFragment = (MapFragment)fragmentManager.findFragmentById(R.id.mapFragment);
+		mapFragment = (VideoMapFragment)fragmentManager.findFragmentById(R.id.mapFragment);
 
 		allPoints = getAllPoints();
 		
@@ -85,7 +77,10 @@ public class PlaybackActivity extends Activity {
 		// start the video 
 		mVideoView.start();
 		
-		configureMapFragment();
+		// add polyline
+		mapFragment.addPolyline(allPoints);
+		
+		//configureMapFragment();
 	}
 	
 	@Override
@@ -101,8 +96,8 @@ public class PlaybackActivity extends Activity {
 		}		
 	}
 
-	public List<LocationCoordinate> getAllPoints() {
-		List<LocationCoordinate> points = new ArrayList<LocationCoordinate>();
+	public ArrayList<LocationCoordinate> getAllPoints() {
+		ArrayList<LocationCoordinate> points = new ArrayList<LocationCoordinate>();
 		db = mDbHelper.getReadableDatabase();
 
 		// find the data associated with the chosen video
@@ -115,13 +110,6 @@ public class PlaybackActivity extends Activity {
 			cursor.moveToNext();
 		}
 		return points;
-	}
-
-	private void configureMapFragment() {
-		map = mapFragment.getMap();
-		LatLng point = new LatLng(allPoints.get(0).getLatitude(), allPoints.get(0).getLongitude());
-		map.addMarker(new MarkerOptions().position(point));
-		map.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 15));
 	}
 
 	@Override
