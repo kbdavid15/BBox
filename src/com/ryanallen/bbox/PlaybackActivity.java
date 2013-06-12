@@ -4,10 +4,12 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import android.view.SurfaceHolder;
@@ -15,6 +17,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.MediaController;
 import android.widget.VideoView;
+//import tigerbeer;
+
 
 /**
  *
@@ -32,6 +36,8 @@ public class PlaybackActivity extends Activity {
 	private SQLiteDatabase db;
 	private String[] allColumns = { MyDbOpenHelper.COLUMN_ID, MyDbOpenHelper.COLUMN_FILENAME, MyDbOpenHelper.COLUMN_LATITUDE,
 			MyDbOpenHelper.COLUMN_LONGITUDE, MyDbOpenHelper.COLUMN_SPEED, MyDbOpenHelper.COLUMN_ALTITUDE, MyDbOpenHelper.COLUMN_TIMESTAMP };
+	private SharedPreferences settings;
+	private boolean show_map;
 
 	private int videoPosition = 0;
 
@@ -45,6 +51,7 @@ public class PlaybackActivity extends Activity {
 			}
 		}
 		// check the orientation
+		settings = PreferenceManager.getDefaultSharedPreferences(this);
 		Configuration config = getResources().getConfiguration();
 		WindowManager.LayoutParams attrs = getWindow().getAttributes();
 		switch (config.orientation) {
@@ -60,9 +67,18 @@ public class PlaybackActivity extends Activity {
 			getWindow().setAttributes(attrs);
 			break;
 		}
+<<<<<<< HEAD
 
-		setContentView(R.layout.activity_playback);
 
+=======
+		
+		boolean show_map = settings.getBoolean("show_map", true);
+		if(show_map){
+			setContentView(R.layout.activity_playback);
+		}else{
+			setContentView(R.layout.activity_playback_nomap);
+		}
+>>>>>>> Show Map Option works
 		// get the values from the parent activity
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
