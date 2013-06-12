@@ -73,6 +73,9 @@ public class PlaybackActivity extends Activity {
 		// setup the video
 		mVideoView.setVideoPath(videoPath);
 		mVideoView.setMediaController(new MediaController(this));
+		
+		// link the video to the mapfragment
+		mapFragment.setVideoView(mVideoView);
 
 		// start the video 
 		mVideoView.start();

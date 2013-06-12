@@ -10,7 +10,10 @@ import android.widget.VideoView;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -25,6 +28,9 @@ public class VideoMapFragment extends MapFragment {
 	private Polyline line;
 	private VideoView videoView;
 	
+	public static final double METERSSEC_2_MPH = 2.23694;
+	public static final double METERSSEC_2_KPH = 3.6;
+	
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -38,11 +44,23 @@ public class VideoMapFragment extends MapFragment {
 	
 	public void addPolyline(ArrayList<LocationCoordinate> allPoints) {
 		this.locations = allPoints;
+		final LatLngBounds.Builder builder = new LatLngBounds.Builder();
 		for (LocationCoordinate coord : locations) {
-			latLngPoints.add(coord.getLatLng());
+			LatLng point = coord.getLatLng();
+			latLngPoints.add(point);
+			builder.include(point);
 		}
 		line = map.addPolyline(new PolylineOptions().addAll(latLngPoints).width(5).color(Color.RED));
 		// center the map on the last point
-		map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLngPoints.get(latLngPoints.size() - 1), 16));
+		map.setOnCameraChangeListener(new OnCameraChangeListener() {		
+			@Override
+			public void onCameraChange(CameraPosition arg0) {
+				// Move camera.
+		        map.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 10));
+		        // Remove listener to prevent position reset on camera move.
+		        map.setOnCameraChangeListener(null);
+			}
+		});
+		
 	}
 }

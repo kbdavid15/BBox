@@ -10,7 +10,7 @@ import android.view.WindowManager;
 public class SplashActivity extends Activity {
 
  private static String TAG = SplashActivity.class.getName();
- private static long SLEEP_TIME = 2;    // Sleep for some time
+ private static long SLEEP_TIME = 1;    // Sleep for some time
 
  @Override
  protected void onCreate(Bundle savedInstanceState) {
