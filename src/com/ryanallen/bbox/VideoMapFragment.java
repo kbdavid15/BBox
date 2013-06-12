@@ -61,6 +61,5 @@ public class VideoMapFragment extends MapFragment {
 		        map.setOnCameraChangeListener(null);
 			}
 		});
-		
 	}
 }
