@@ -5,25 +5,17 @@
     android:orientation="vertical"
     tools:context=".PlaybackActivity" >
 
-    <!--
-         The primary full-screen view. This can be replaced with whatever view
-         is needed to present your content, e.g. VideoView, SurfaceView,
-         TextureView, etc.
-    -->
-
     <fragment
         android:id="@+id/mapFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0"
         class="com.google.android.gms.maps.MapFragment" />
-
-    <VideoView
-        android:id="@+id/videoView1"
+    
+    <include
+        layout="@layout/video_overlay_layout"
+        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" 
-        android:layout_gravity="center_horizontal"
-        android:keepScreenOn="true" />
+        android:layout_height="match_parent" />
 
 </LinearLayout>

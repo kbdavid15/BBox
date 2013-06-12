@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.MediaController;
 import android.widget.VideoView;
@@ -65,12 +66,13 @@ public class PlaybackActivity extends Activity {
 			getWindow().setAttributes(attrs);
 			break;
 		}
+		setContentView(R.layout.activity_playback);
+		fragmentManager = getFragmentManager();
+		mapFragment = (VideoMapFragment)fragmentManager.findFragmentById(R.id.mapFragment);
 		
 		show_map = settings.getBoolean("show_map", true);
-		if(show_map){
-			setContentView(R.layout.activity_playback);
-		}else{
-			setContentView(R.layout.activity_playback_nomap);
+		if (!show_map) {
+			mapFragment.getView().setVisibility(View.GONE);
 		}
 		// get the values from the parent activity
 		Bundle extras = getIntent().getExtras();
@@ -79,16 +81,13 @@ public class PlaybackActivity extends Activity {
 		}
 
 		// set up the database helper
-		mDbHelper = new MyDbOpenHelper(this);		
-
-		fragmentManager = getFragmentManager();
-		mapFragment = (VideoMapFragment)fragmentManager.findFragmentById(R.id.mapFragment);
+		mDbHelper = new MyDbOpenHelper(this);
 
 		allPoints = getAllPoints();
 
 		// load the video
 		mVideoView = (VideoView)findViewById(R.id.videoView1);
-
+		
 		// setup the video
 		mVideoView.setVideoPath(videoPath);
 		mVideoView.setMediaController(new MediaController(this));
