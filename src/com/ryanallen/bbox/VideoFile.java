@@ -2,7 +2,9 @@ package com.ryanallen.bbox;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 
 import android.content.Context;
@@ -16,30 +18,36 @@ import android.widget.TextView;
 
 public class VideoFile extends File {
 	private static final long serialVersionUID = -6694017648316508704L;
-	
+
 	public VideoFile(String path) {
 		super(path);
 	}
-	
+
 	public static ArrayList<VideoFile> getAllBboxVideos() {
 		// get the save directory for the black box recordings
 		File videoStorageDir = new File(
-			Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES), 
-			"BlackBox");
+				Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES), 
+				"BlackBox");
 		ArrayList<VideoFile> videoFileList = new ArrayList<VideoFile>();
 		// get a list of files
 		if (videoStorageDir.exists()) {			
 			File[] fileArray = videoStorageDir.listFiles();
+			// sort by date modified
+			Arrays.sort(fileArray, Collections.reverseOrder(new Comparator<File>() {
+				public int compare(File f1, File f2)
+				{
+					return Long.valueOf(f1.lastModified()).compareTo(f2.lastModified());
+				}
+			}));
 			for (File file : fileArray) {
 				videoFileList.add(new VideoFile(file.getAbsolutePath()));
 			}
-			Collections.reverse(videoFileList);	// reverse the list so that most recent videos are on top
 			return videoFileList;
 		} else {
 			return videoFileList;
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		return getName();
@@ -50,7 +58,7 @@ class DetailAdapter extends BaseAdapter {
 	private Context context;
 	private ArrayList<VideoFile> videoFiles;
 	private LayoutInflater inflater;
-	
+
 	public DetailAdapter(Context context, ArrayList<VideoFile> videoFiles) {
 		this.context = context;
 		this.videoFiles = videoFiles;
@@ -78,13 +86,13 @@ class DetailAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		if (convertView == null) {
-            convertView = inflater.inflate(R.layout.video_file_item_layout, null);
-        }
-		
+			convertView = inflater.inflate(R.layout.video_file_item_layout, null);
+		}
+
 		// get handles on the TextViews
 		TextView titleText = (TextView)convertView.findViewById(R.id.textViewTitle);
 		TextView detailText = (TextView)convertView.findViewById(R.id.textViewDetail);
-		
+
 		// set the text on the TextViews
 		VideoFile video = (VideoFile)getItem(position);
 		titleText.setText(video.getName());
