@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
+import android.view.SurfaceHolder;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.MediaController;
@@ -41,7 +42,7 @@ public class PlaybackActivity extends Activity {
 		case Configuration.ORIENTATION_LANDSCAPE:
 			// go into fullscreen mode
 		    attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
-		    requestWindowFeature(Window.FEATURE_NO_TITLE);
+		    //requestWindowFeature(Window.FEATURE_NO_TITLE);
 		    getWindow().setAttributes(attrs);
 			break;
 		case Configuration.ORIENTATION_PORTRAIT:
@@ -82,7 +83,6 @@ public class PlaybackActivity extends Activity {
 		
 		// add polyline
 		mapFragment.addPolyline(allPoints);
-		
 		//configureMapFragment();
 	}
 	
@@ -119,6 +119,8 @@ public class PlaybackActivity extends Activity {
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
 	}
+	
+	
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {

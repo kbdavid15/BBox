@@ -111,6 +111,9 @@ com.google.android.gms.location.LocationListener {
 		super.onStart();
 		mLocationClient.connect();
 	}
+	
+	
+	
 
 	private boolean initializeCamera() {
 		// create an instance of camera
