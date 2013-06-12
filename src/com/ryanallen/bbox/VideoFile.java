@@ -2,13 +2,12 @@ package com.ryanallen.bbox;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import android.content.Context;
-import android.os.Environment;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,57 +17,71 @@ import android.widget.TextView;
 
 public class VideoFile extends File {
 	private static final long serialVersionUID = -6694017648316508704L;
+	private String displayName = null;
+
+	public String getDisplayName() {
+		return displayName;
+	}
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
 
 	public VideoFile(String path) {
 		super(path);
 	}
+	public VideoFile(File file) {
+		super(file.getAbsolutePath());
+	}
 
-	public static ArrayList<VideoFile> getAllBboxVideos() {
-		// get the save directory for the black box recordings
-		File videoStorageDir = new File(
-				Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES), 
-				"BlackBox");
-		ArrayList<VideoFile> videoFileList = new ArrayList<VideoFile>();
-		// get a list of files
-		if (videoStorageDir.exists()) {			
-			File[] fileArray = videoStorageDir.listFiles();
-			// sort by date modified
-			Arrays.sort(fileArray, Collections.reverseOrder(new Comparator<File>() {
-				public int compare(File f1, File f2)
-				{
-					return Long.valueOf(f1.lastModified()).compareTo(f2.lastModified());
-				}
-			}));
-			for (File file : fileArray) {
-				videoFileList.add(new VideoFile(file.getAbsolutePath()));
-			}
-			return videoFileList;
+	public boolean delete(VideoFileHelper helper) {
+		// remove the setting in shared preferences, if it exists
+		helper.removeKeyFromPrefs(getAbsolutePath());
+		helper.notifyDeletedFile(this);
+		return super.delete();
+	}
+	
+	@Override
+	public String toString() {
+		if (displayName == null) {
+			return getName();
 		} else {
-			return videoFileList;
+			return displayName;
 		}
 	}
 
 	@Override
-	public String toString() {
-		return getName();
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		if (obj == this)
+			return true;
+		if (!(obj instanceof File))
+			return false;
+
+		File rhs = (File)obj;
+		return new EqualsBuilder()
+		.appendSuper(super.equals(obj))
+		.append(getAbsoluteFile(), rhs.getAbsolutePath())
+		.isEquals();
+	}
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(17,31)
+		.appendSuper(super.hashCode())
+		.append(getAbsolutePath())
+		.toHashCode();
 	}
 }
 
 class DetailAdapter extends BaseAdapter {
-	private Context context;
 	private ArrayList<VideoFile> videoFiles;
 	private LayoutInflater inflater;
+	private VideoFileHelper fileHelper;
 
-	public DetailAdapter(Context context, ArrayList<VideoFile> videoFiles) {
-		this.context = context;
-		this.videoFiles = videoFiles;
+	public DetailAdapter(Context context, VideoFileHelper helper) {
+		this.fileHelper = helper;
+		this.videoFiles = fileHelper.getVideoFiles();
 		this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-	}
-	@Override
-	public void notifyDataSetChanged() {
-		// repopulate the list of videos
-		videoFiles = VideoFile.getAllBboxVideos();
-		super.notifyDataSetChanged();
 	}
 
 	@Override
@@ -95,7 +108,7 @@ class DetailAdapter extends BaseAdapter {
 
 		// set the text on the TextViews
 		VideoFile video = (VideoFile)getItem(position);
-		titleText.setText(video.getName());
+		titleText.setText(video.toString());
 		Date date = new Date(video.lastModified());
 		detailText.setText(DateFormat.format("EEEE, MMMM d, yyyy hh:mm A", date));
 		return convertView;

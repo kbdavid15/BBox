@@ -133,6 +133,19 @@ com.google.android.gms.location.LocationListener {
 	@Override
 	protected void onPause() {
 		super.onPause();  // Always call the superclass method first
+		
+		// if video is recording, stop it
+		if (mMediaRecorder != null) {
+			try {
+				// stop recording
+				mMediaRecorder.stop();
+				mMediaRecorder.reset();
+				mMediaRecorder.release();
+				myCamera.lock();	
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 
 		// Release the Camera because we don't need it when paused
 		// and other activities might need to use it.

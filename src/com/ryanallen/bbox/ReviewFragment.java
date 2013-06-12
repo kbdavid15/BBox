@@ -1,7 +1,5 @@
 package com.ryanallen.bbox;
 
-import java.util.ArrayList;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -17,12 +15,13 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 
 public class ReviewFragment extends ListFragment implements OnItemLongClickListener {
-	private DetailAdapter mDetailAdapter;	
-	private ArrayList<VideoFile> videoFiles;
+	private DetailAdapter mDetailAdapter;
 	private ListView reviewListView;
+	private VideoFileHelper fileHelper;
 
 	public static final String SELECTED_VIDEO_FILE = "SELECTED_VIDEO_FILE";
 
@@ -38,11 +37,12 @@ public class ReviewFragment extends ListFragment implements OnItemLongClickListe
 		// populate the listview with flagged videos
 		reviewListView = (ListView)getListView();
 		
-		videoFiles = VideoFile.getAllBboxVideos();
+		// initialize the video file helper
+		fileHelper = new VideoFileHelper(getActivity());
 
 		// if there are no video files, tell the user
-		if (videoFiles.size() != 0) {
-			mDetailAdapter = new DetailAdapter(getActivity(), videoFiles);		
+		if (fileHelper.getVideoFiles().size() != 0) {
+			mDetailAdapter = new DetailAdapter(getActivity(), fileHelper);		
 			reviewListView.setAdapter(mDetailAdapter);
 			// add listener (don't add the listener if there are no files)
 			reviewListView.setOnItemLongClickListener(this);
@@ -75,6 +75,7 @@ public class ReviewFragment extends ListFragment implements OnItemLongClickListe
 	@Override
 	public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 		final ListView listView = (ListView)parent;
+		final int listPosition = position;
 		// get the selected video file
 		final VideoFile selectedFile;
 		try {
@@ -88,24 +89,23 @@ public class ReviewFragment extends ListFragment implements OnItemLongClickListe
 			@Override
 			public Dialog onCreateDialog(Bundle savedInstanceState) {
 				return new AlertDialog.Builder(getActivity())
-				.setItems(R.array.alert_edit_or_delete, new OnClickListener() {
+				.setItems(R.array.alert_rename_or_delete, new OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						switch (which) {
 						case 0:
 							// edit the video name
-							
+							EditVideoNameDialogFragment editFrag = EditVideoNameDialogFragment.newInstance(selectedFile, listPosition);
+							editFrag.show(getFragmentManager(), "Edit Dialog");
 							break;
 						case 1:
 							// delete the selected video
-							selectedFile.delete();
+							selectedFile.delete(fileHelper);
 							((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
 //							Intent intent = getActivity().getIntent();
 //							getActivity().finish();
 //							startActivity(intent);
 							break;
-						default:
-							
 						}
 					}
 				}).create();
@@ -116,28 +116,48 @@ public class ReviewFragment extends ListFragment implements OnItemLongClickListe
 	}
 	
 	public static class EditVideoNameDialogFragment extends DialogFragment {
+		private EditText editTextNewName;
+		private int position;
+		
+		public static EditVideoNameDialogFragment newInstance(VideoFile selectedFile, int position) {
+			EditVideoNameDialogFragment frag = new EditVideoNameDialogFragment();
+			Bundle bundle = new Bundle();
+			bundle.putString("OldName", selectedFile.getName());
+			bundle.putInt("position", position);
+			frag.setArguments(bundle);
+			return frag;			
+		}
+		
 		@Override
 		public Dialog onCreateDialog(Bundle savedInstanceState) {
 			LayoutInflater factory = LayoutInflater.from(getActivity());
             final View textEntryView = factory.inflate(R.layout.edit_video_dialog, null);
+            editTextNewName = (EditText)textEntryView.findViewById(R.id.editTextVideoName);            
+            editTextNewName.setText(getArguments().getString("OldName"));
+            position = getArguments().getInt("position");
+            
             return new AlertDialog.Builder(getActivity())
-                .setIconAttribute(android.R.attr.alertDialogIcon)
                 .setTitle(R.string.alert_dialog_text_entry)
                 .setView(textEntryView)
                 .setPositiveButton(R.string.alert_dialog_ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-    
-                        /* User clicked OK so do some stuff */
+                    	// User clicked OK
+                    	((ReviewFragment)getFragmentManager().findFragmentByTag("Review")).renameVideoDisplayName(editTextNewName.getText().toString(), position);
                     }
                 })
                 .setNegativeButton(R.string.alert_dialog_cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-
+                    	
                         /* User clicked cancel so do some stuff */
                     }
                 })
                 .create();
 		}
+	}
+	
+	public void renameVideoDisplayName(String displayName, int position) {
+		fileHelper.setVideoDisplayName(displayName, position);
+		((BaseAdapter)reviewListView.getAdapter()).notifyDataSetChanged();
 	}
 	
 }

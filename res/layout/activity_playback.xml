@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".PlaybackActivity" 
-    >
+    tools:context=".PlaybackActivity" >
 
     <!--
          The primary full-screen view. This can be replaced with whatever view
@@ -19,19 +18,12 @@
         android:layout_weight="1"
         class="com.ryanallen.bbox.VideoMapFragment" />
 
-    <!--
-        <fragment
-        android:id="@+id/mapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        class="com.google.android.gms.maps.MapFragment" />
-    -->
-
     <VideoView
         android:id="@+id/videoView1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
         android:layout_gravity="center_horizontal"
+        android:layout_weight="1"
         android:keepScreenOn="true" />
+
 </LinearLayout>
