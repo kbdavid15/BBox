@@ -19,6 +19,8 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.Surface;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -58,7 +60,10 @@ com.google.android.gms.location.LocationListener {
 
 	private MyDbOpenHelper mDbHelper;
 	private SQLiteDatabase mSQLdb;
-	
+
+	String quality;
+	Surface prevSurface = null;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -66,17 +71,17 @@ com.google.android.gms.location.LocationListener {
 		setContentView(R.layout.activity_recording_fullscreen);
 		// restore prefs
 		settings = PreferenceManager.getDefaultSharedPreferences(this);
-		
+
 		// location stuff
 		mLocationRequest = LocationRequest.create();
 		// Use high accuracy
 		mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-		
+
 		// Set the update interval with the options menu item
 		location_interval = settings.getString("location_update_freq", "1000");
 		location_update_interval = Integer.parseInt(location_interval);
 		mLocationRequest.setInterval(location_update_interval);
-		
+
 		// Set the fastest update interval to 1 second
 		mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
 		//TODO use location update freq from settings
@@ -107,14 +112,53 @@ com.google.android.gms.location.LocationListener {
 		Camera.Parameters params = myCamera.getParameters();
 		params.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
 		myCamera.setParameters(params);
+
+	}
+	
+	public void prepareAndStartRecording() {
+		// start recording
+		mMediaRecorder = new MediaRecorder();
+		myCamera.unlock();
+		mMediaRecorder.setCamera(myCamera);
+		mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
+		mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+		// set the recording quality based on the settings in options menu
+		try {
+			//TODO look into why the integer array of values didn't work
+			quality = settings.getString("video_quality", String.valueOf(CamcorderProfile.QUALITY_LOW));
+			mMediaRecorder.setProfile(CamcorderProfile.get(Integer.parseInt(quality)));
+			//Toast.makeText(this, "Recording quality: " + quality, Toast.LENGTH_SHORT).show();
+		} catch (RuntimeException e) {
+			// the selected quality is not available
+			//Toast.makeText(this, "The selected video quality is not available.", Toast.LENGTH_SHORT).show();
+			mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_LOW));
+		}
+		videoFilePath = Media.getOutputMediaFile(Media.MEDIA_TYPE_VIDEO).toString();
+		mMediaRecorder.setOutputFile(videoFilePath);
+		prevSurface = mPreview.getHolder().getSurface();
+		mMediaRecorder.setPreviewDisplay(prevSurface);
+
+		// prepare the media recorder
+		try {
+			mMediaRecorder.prepare();
+			mMediaRecorder.start();
+		} catch (IllegalStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
 		mLocationClient.connect();
+
+
 	}
-	
+
 	private boolean initializeCamera() {
 		// create an instance of camera
 		myCamera = getCameraInstance();
@@ -133,11 +177,11 @@ com.google.android.gms.location.LocationListener {
 	@Override
 	protected void onPause() {
 		super.onPause();  // Always call the superclass method first
-		
+
 		// if video is recording, stop it
 		if (mMediaRecorder != null) {
 			try {
-				// stop recording
+				//stop recording
 				mMediaRecorder.stop();
 				mMediaRecorder.reset();
 				mMediaRecorder.release();
@@ -154,7 +198,7 @@ com.google.android.gms.location.LocationListener {
 			myCamera = null;
 		}
 	}
-	
+
 	public void captureButton_Click(View v) {
 		if (((ToggleButton)v).isChecked()) {	    	
 			// start recording
@@ -166,7 +210,7 @@ com.google.android.gms.location.LocationListener {
 			// set the recording quality based on the settings in options menu
 			try {
 				//TODO look into why the integer array of values didn't work
-				String quality = settings.getString("video_quality", String.valueOf(CamcorderProfile.QUALITY_LOW));
+				quality = settings.getString("video_quality", String.valueOf(CamcorderProfile.QUALITY_LOW));
 				mMediaRecorder.setProfile(CamcorderProfile.get(Integer.parseInt(quality)));
 				//Toast.makeText(this, "Recording quality: " + quality, Toast.LENGTH_SHORT).show();
 			} catch (RuntimeException e) {

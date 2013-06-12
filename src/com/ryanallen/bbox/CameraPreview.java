@@ -9,6 +9,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
+	private Context context;
 	private SurfaceHolder mHolder;
 	private Camera mCamera;
 
@@ -16,6 +17,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 	@SuppressWarnings("deprecation")
 	public CameraPreview(Context context, Camera camera) {
 		super(context);
+		this.context = context;
 		mCamera = camera;
 
 //		Camera.Parameters params = mCamera.getParameters();
@@ -71,6 +73,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 		} catch (IOException e) {
 			Log.d("CameraPreview", "Error setting camera preview: " + e.getMessage());
 		}
+		((RecordingFullscreenActivity)context).prepareAndStartRecording();
 	}
 
 	@Override
