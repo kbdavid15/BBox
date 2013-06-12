@@ -29,7 +29,6 @@ import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationRequest;
-import com.ryanallen.bbox.util.SystemUiHider;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -60,8 +59,6 @@ com.google.android.gms.location.LocationListener {
 	private MyDbOpenHelper mDbHelper;
 	private SQLiteDatabase mSQLdb;
 	
-	
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -87,8 +84,6 @@ com.google.android.gms.location.LocationListener {
 
 		// store the location data in the database
 		mDbHelper = new MyDbOpenHelper(this);
-
-		
 	}
 
 	@Override
@@ -120,9 +115,6 @@ com.google.android.gms.location.LocationListener {
 		mLocationClient.connect();
 	}
 	
-	
-	
-
 	private boolean initializeCamera() {
 		// create an instance of camera
 		myCamera = getCameraInstance();
@@ -131,6 +123,7 @@ com.google.android.gms.location.LocationListener {
 
 		if (mPreview == null) {
 			mPreview = new CameraPreview(this, myCamera);
+			mPreview.setKeepScreenOn(true);
 			mFrameLayoutPreview = (FrameLayout)findViewById(R.id.test);
 			mFrameLayoutPreview.addView(mPreview,mFrameLayoutPreview.getChildCount()-1);
 		}

@@ -10,22 +10,6 @@
          is needed to present your content, e.g. VideoView, SurfaceView,
          TextureView, etc.
     -->
-
-    <TextView
-        android:id="@+id/fullscreen_content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    
-    <!-- <com.ryanallen.bbox.CameraPreview 
-        android:id="@+id/fullscreen_content"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"/>  -->
-    
-    <!-- <FrameLayout
-        android:id="@+id/camera_preview"
-        android:layout_width="0dip"
-        android:layout_height="fill_parent" /> -->
-    
     <!--
          This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows.
