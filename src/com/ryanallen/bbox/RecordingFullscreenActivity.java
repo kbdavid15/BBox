@@ -47,6 +47,7 @@ com.google.android.gms.location.LocationListener {
 	private MediaRecorder mMediaRecorder;
 	private SharedPreferences settings;
 	private String videoFilePath = null;
+	
 
 	private ConnectionResult connectionResult;
 	public static String location_interval;
@@ -218,7 +219,7 @@ com.google.android.gms.location.LocationListener {
 		}
 	}
 
-	public void captureButton_Click(View v) {
+/*	public void captureButton_Click(View v) {
 		if (((ToggleButton)v).isChecked()) {	    	
 			// start recording
 			mMediaRecorder = new MediaRecorder();
@@ -260,7 +261,7 @@ com.google.android.gms.location.LocationListener {
 			myCamera.lock();	    	
 		}
 	}
-
+*/
 
 	/** A safe way to get an instance of the Camera object. */
 	public static Camera getCameraInstance() {
