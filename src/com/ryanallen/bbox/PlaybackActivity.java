@@ -67,10 +67,7 @@ public class PlaybackActivity extends Activity {
 			getWindow().setAttributes(attrs);
 			break;
 		}
-<<<<<<< HEAD
 
-
-=======
 		
 		boolean show_map = settings.getBoolean("show_map", true);
 		if(show_map){
@@ -78,7 +75,7 @@ public class PlaybackActivity extends Activity {
 		}else{
 			setContentView(R.layout.activity_playback_nomap);
 		}
->>>>>>> Show Map Option works
+
 		// get the values from the parent activity
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {

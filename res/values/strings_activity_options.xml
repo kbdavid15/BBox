@@ -53,15 +53,15 @@
     <string name="pref_title_show_map">Show Location Map</string>
     <string-array name="pref_location_update_freq_titles">
         <item >1sec</item>
+        <item >5sec</item>
         <item >10sec</item>
-        <item >30sec</item>
-        <item >1min</item>
+        <item >15sec</item>
     </string-array>
     <string-array name="pref_location_update_freq_values">
-        <item >1</item>
-        <item >10</item>
-        <item >30</item>
-        <item >60</item>
+        <item >1000</item>
+        <item >5000</item>
+        <item >10000</item>
+        <item >15000</item>
     </string-array>
     <string name="pref_title_location_update_freq">Location Update Frequency</string>
     <string-array name="pref_si_units_titles">

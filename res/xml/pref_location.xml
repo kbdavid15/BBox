@@ -17,7 +17,7 @@
         android:key="show_map"
         android:title="@string/pref_title_show_map" />
    <ListPreference
-       android:defaultValue="10"
+       android:defaultValue="1000"
        android:dependency="track_location"
        android:entries="@array/pref_location_update_freq_titles"
        android:entryValues="@array/pref_location_update_freq_values"

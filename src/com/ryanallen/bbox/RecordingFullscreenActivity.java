@@ -48,7 +48,8 @@ com.google.android.gms.location.LocationListener {
 	private String videoFilePath = null;
 
 	private ConnectionResult connectionResult;
-	public static final int LOCATION_UPDATE_INTERVAL = 1000;
+	public static String location_interval;
+	public static int location_update_interval = 0;
 	// The fastest update frequency, in milliseconds
 	private static final int FASTEST_INTERVAL = 1000;
 	// Define an object that holds accuracy and frequency parameters
@@ -58,19 +59,27 @@ com.google.android.gms.location.LocationListener {
 
 	private MyDbOpenHelper mDbHelper;
 	private SQLiteDatabase mSQLdb;
+	
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_recording_fullscreen);
-
+		// restore prefs
+		settings = PreferenceManager.getDefaultSharedPreferences(this);
+		
 		// location stuff
 		mLocationRequest = LocationRequest.create();
 		// Use high accuracy
 		mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-		// Set the update interval to 5 seconds
-		mLocationRequest.setInterval(LOCATION_UPDATE_INTERVAL);
+		
+		// Set the update interval with the options menu item
+		location_interval = settings.getString("location_update_freq", "1000");
+		location_update_interval = Integer.parseInt(location_interval);
+		mLocationRequest.setInterval(location_update_interval);
+		
 		// Set the fastest update interval to 1 second
 		mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
 		//TODO use location update freq from settings
@@ -79,8 +88,7 @@ com.google.android.gms.location.LocationListener {
 		// store the location data in the database
 		mDbHelper = new MyDbOpenHelper(this);
 
-		// restore prefs
-		settings = PreferenceManager.getDefaultSharedPreferences(this);
+		
 	}
 
 	@Override
@@ -145,7 +153,7 @@ com.google.android.gms.location.LocationListener {
 		if (((ToggleButton)v).isChecked()) {	    	
 			// start recording
 			mMediaRecorder = new MediaRecorder();
-			myCamera.unlock();			
+			myCamera.unlock();
 			mMediaRecorder.setCamera(myCamera);
 			mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
 			mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
