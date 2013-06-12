@@ -63,6 +63,8 @@ com.google.android.gms.location.LocationListener {
 
 	String quality;
 	Surface prevSurface = null;
+	
+	public final int VIDEO_LENGTH_MILLIS = 30000;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -137,6 +139,8 @@ com.google.android.gms.location.LocationListener {
 		mMediaRecorder.setOutputFile(videoFilePath);
 		prevSurface = mPreview.getHolder().getSurface();
 		mMediaRecorder.setPreviewDisplay(prevSurface);
+		mMediaRecorder.setMaxDuration(VIDEO_LENGTH_MILLIS);
+		mMediaRecorder.setOnInfoListener(stopListener);
 
 		// prepare the media recorder
 		try {
@@ -151,6 +155,21 @@ com.google.android.gms.location.LocationListener {
 		}
 	}
 
+	private MediaRecorder.OnInfoListener stopListener = new MediaRecorder.OnInfoListener(){
+
+		@Override
+		public void onInfo(MediaRecorder mr, int what, int extra) {
+			switch(what){
+			case(MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED):
+				mMediaRecorder.stop();
+				mMediaRecorder.reset();
+				prepareAndStartRecording();
+				break;
+			}
+		}
+		
+	};
+	
 	@Override
 	protected void onStart() {
 		super.onStart();
