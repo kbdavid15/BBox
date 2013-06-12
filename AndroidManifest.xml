@@ -8,7 +8,7 @@
         android:name="com.ryanallen.bbox.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
 
-    <uses-permission android:name="com.ryanallen.bbox.permission.MAPS_RECEIVE" />
+    <uses-permission android:name="com.ryanallen.bbox.permission.MAPS_RECEIVE" />;
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />

@@ -149,13 +149,13 @@ com.google.android.gms.location.LocationListener {
 			// set the recording quality based on the settings in options menu
 			try {
 				//TODO look into why the integer array of values didn't work
-				String quality = settings.getString("video_quality", String.valueOf(CamcorderProfile.QUALITY_HIGH));
+				String quality = settings.getString("video_quality", String.valueOf(CamcorderProfile.QUALITY_LOW));
 				mMediaRecorder.setProfile(CamcorderProfile.get(Integer.parseInt(quality)));
-				Toast.makeText(this, "Recording quality: " + quality, Toast.LENGTH_SHORT).show();
+				//Toast.makeText(this, "Recording quality: " + quality, Toast.LENGTH_SHORT).show();
 			} catch (RuntimeException e) {
 				// the selected quality is not available
-				Toast.makeText(this, "The selected video quality is not available. Using highest available quality.", Toast.LENGTH_LONG).show();
-				mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH));
+				//Toast.makeText(this, "The selected video quality is not available.", Toast.LENGTH_SHORT).show();
+				mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_LOW));
 			}
 			videoFilePath = Media.getOutputMediaFile(Media.MEDIA_TYPE_VIDEO).toString();
 			mMediaRecorder.setOutputFile(videoFilePath);
