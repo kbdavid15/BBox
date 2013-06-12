@@ -56,6 +56,12 @@ class DetailAdapter extends BaseAdapter {
 		this.videoFiles = videoFiles;
 		this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
+	@Override
+	public void notifyDataSetChanged() {
+		// repopulate the list of videos
+		videoFiles = VideoFile.getAllBboxVideos();
+		super.notifyDataSetChanged();
+	}
 
 	@Override
 	public int getCount() {

@@ -12,8 +12,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
-import android.view.SurfaceHolder;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.MediaController;
 import android.widget.VideoView;
@@ -67,15 +65,13 @@ public class PlaybackActivity extends Activity {
 			getWindow().setAttributes(attrs);
 			break;
 		}
-
 		
-		boolean show_map = settings.getBoolean("show_map", true);
+		show_map = settings.getBoolean("show_map", true);
 		if(show_map){
 			setContentView(R.layout.activity_playback);
 		}else{
 			setContentView(R.layout.activity_playback_nomap);
 		}
-
 		// get the values from the parent activity
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {

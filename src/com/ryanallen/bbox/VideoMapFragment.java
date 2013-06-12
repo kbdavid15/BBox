@@ -43,6 +43,9 @@ public class VideoMapFragment extends MapFragment {
 	}
 	
 	public void addPolyline(ArrayList<LocationCoordinate> allPoints) {
+		if (allPoints.size() == 0) {
+			return;
+		}
 		this.locations = allPoints;
 		final LatLngBounds.Builder builder = new LatLngBounds.Builder();
 		for (LocationCoordinate coord : locations) {

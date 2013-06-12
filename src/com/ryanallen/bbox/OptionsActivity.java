@@ -14,7 +14,6 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
-import android.widget.CheckBox;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
