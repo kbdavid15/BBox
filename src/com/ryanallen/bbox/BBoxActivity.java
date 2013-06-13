@@ -29,8 +29,8 @@ public class BBoxActivity extends Activity {
 	    
 		Tab tab = actionBar.newTab().setText("Home").setTabListener(new TabListener<DashboardFragment>(this, "Dashboard", DashboardFragment.class));
 		actionBar.addTab(tab);
-		tab = actionBar.newTab().setText("Vehicles").setTabListener(new TabListener<VehiclesFragment>(this, "Vehicles", VehiclesFragment.class));
-		actionBar.addTab(tab);
+		/*tab = actionBar.newTab().setText("Vehicles").setTabListener(new TabListener<VehiclesFragment>(this, "Vehicles", VehiclesFragment.class));
+		actionBar.addTab(tab);*/
 		tab = actionBar.newTab().setText("Review").setTabListener(new TabListener<ReviewFragment>(this, "Review", ReviewFragment.class));
 		actionBar.addTab(tab);
 //		tab = actionBar.newTab().setText("Options").setTabListener(new TabListener<OptionsFragment>(this, "Options", OptionsFragment.class));
