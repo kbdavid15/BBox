@@ -51,6 +51,8 @@ public class ReviewFragment extends ListFragment implements OnItemLongClickListe
 			reviewListView.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, errorText));
 		}
 	}
+	
+
 
 	@Override
 	/**

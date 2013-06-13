@@ -306,7 +306,9 @@ com.google.android.gms.location.LocationListener {
 	 */
 	@Override
 	public void onConnected(Bundle dataBundle) {
-		mLocationClient.requestLocationUpdates(mLocationRequest, this);
+		if(mLocationRequest != null){
+			mLocationClient.requestLocationUpdates(mLocationRequest, this);
+		}
 	}
 	/**
 	 * Called by Location Services if the connection to the
@@ -342,22 +344,24 @@ com.google.android.gms.location.LocationListener {
 
 	@Override
 	protected void onStop() {
-		// If the client is connected
-		if (mLocationClient.isConnected()) {
+		if(mLocationRequest != null){
+			// If the client is connected
+			if (mLocationClient.isConnected()) {
+				/*
+				 * Remove location updates for a listener.
+				 * The current Activity is the listener, so
+				 * the argument is "this".
+				 */
+				mLocationClient.removeLocationUpdates(this);
+			}
 			/*
-			 * Remove location updates for a listener.
-			 * The current Activity is the listener, so
-			 * the argument is "this".
+			 * After disconnect() is called, the client is
+			 * considered "dead".
 			 */
-			mLocationClient.removeLocationUpdates(this);
+			mLocationClient.disconnect();
+			mSQLdb.close();
+			super.onStop();
 		}
-		/*
-		 * After disconnect() is called, the client is
-		 * considered "dead".
-		 */
-		mLocationClient.disconnect();
-		mSQLdb.close();
-		super.onStop();
 	}
 
 	/*
