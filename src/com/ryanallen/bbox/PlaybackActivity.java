@@ -5,6 +5,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.SharedPreferences;
@@ -15,7 +17,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -91,6 +92,9 @@ public class PlaybackActivity extends Activity implements MediaPlayer.OnCompleti
 			public void handleMessage(Message msg) {
 				super.handleMessage(msg);
 				speedTextView.setText((String)msg.obj);
+				Bundle b = msg.getData();
+				LatLng latlng = new LatLng(b.getDouble("latitude"), b.getDouble("longitude"));
+				mapFragment.updateMarkerPosition(latlng);
 			}
 		};
 
@@ -102,8 +106,9 @@ public class PlaybackActivity extends Activity implements MediaPlayer.OnCompleti
 		// load the video
 		mVideoView = (VideoView)findViewById(R.id.videoView1);
 		
-		// set completion listener
+		// set listeners
 		mVideoView.setOnCompletionListener(this);
+		//mVideoView.setOnSeekCompletedListener(this);
 		
 		// setup the video
 		mVideoView.setVideoPath(videoPath);
@@ -139,6 +144,7 @@ public class PlaybackActivity extends Activity implements MediaPlayer.OnCompleti
 		if (mDbHelper.getDatabase() != null) {
 			mDbHelper.close();
 		}
+		scheduler.shutdown();
 	}
 
 	@Override
@@ -146,11 +152,7 @@ public class PlaybackActivity extends Activity implements MediaPlayer.OnCompleti
 		super.onPause();
 		// save the current position of the video
 		videoPosition = mVideoView.getCurrentPosition();
-	}
-
-	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-		super.onPostCreate(savedInstanceState);
+		scheduler.shutdown();
 	}
 	
 	@Override
@@ -192,19 +194,24 @@ public class PlaybackActivity extends Activity implements MediaPlayer.OnCompleti
 				// this is called every 1 second, while the video is playing
 				// get the speed that corresponds with the current video time
 				duration = System.currentTimeMillis() - playbackStartTime;
-				int loc = locationCoordinateList.get(index).getVideoElapsedTime();
-				Log.d("Duration", "Getcurrentposition: " + String.valueOf(duration));
-				Log.d("Duration", "Location:  " + String.valueOf(loc));
-				Log.d("Duration", "Index:  " + String.valueOf(index));
-				if (duration > loc) {
+//				int loc = locationCoordinateList.get(index).getVideoElapsedTime();
+//				Log.d("Duration", "Getcurrentposition: " + String.valueOf(duration));
+//				Log.d("Duration", "Location:  " + String.valueOf(loc));
+//				Log.d("Duration", "Index:  " + String.valueOf(index));
+				if (duration > locationCoordinateList.get(index).getVideoElapsedTime()) {
+					LocationCoordinate coord = locationCoordinateList.get(index);
 					Message msg = new Message();
-					msg.obj = String.format("%.1f", locationCoordinateList.get(index).getSpeed() * LocationCoordinate.METERSSEC_2_MPH);
+					msg.obj = String.format("%.1f", coord.getSpeed() * LocationCoordinate.METERSSEC_2_MPH);
+					Bundle b = new Bundle();
+					b.putDouble("latitude", coord.getLatitude());
+					b.putDouble("longitude", coord.getLongitude());
+					msg.setData(b);
 					mHandler.sendMessage(msg);
 					index++;
 				}
 			}
 		};
-		scheduler.scheduleAtFixedRate(runner, 0, 100, TimeUnit.MILLISECONDS);
+		scheduler.scheduleAtFixedRate(runner, 0, 1000, TimeUnit.MILLISECONDS);
 	}
 
 	@Override

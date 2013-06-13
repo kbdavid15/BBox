@@ -10,9 +10,12 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -25,6 +28,7 @@ public class VideoMapFragment extends MapFragment {
 	private ArrayList<LocationCoordinate> locations;
 	private ArrayList<LatLng> latLngPoints = new ArrayList<LatLng>();
 	private Polyline line;
+	private Marker marker;
 	
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -55,5 +59,15 @@ public class VideoMapFragment extends MapFragment {
 		        map.setOnCameraChangeListener(null);
 			}
 		});
+	}
+	
+	public void updateMarkerPosition(LatLng position) {
+		if (marker != null) {
+			marker.setPosition(position);
+		} else {
+			marker = map.addMarker(new MarkerOptions()
+							.position(position)
+							.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+		}
 	}
 }
