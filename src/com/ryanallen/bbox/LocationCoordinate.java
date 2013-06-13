@@ -11,21 +11,16 @@ public class LocationCoordinate {
 	private String fileName;
 	private double latitude, longitude, speed, altitude;
 	private long unix_time;
+	private int videoElapsedTime;
 	
-	public LocationCoordinate(long id, String filename, double latitude, double longitude, double speed, double altitude, int unix_time) {
-		this.id = id;
-		this.fileName = filename;
-		this.latitude = latitude;
-		this.longitude = longitude;
-		this.speed = speed;
-		this.altitude = altitude;
-		this.unix_time = unix_time;
-	}
+	public static final double METERSSEC_2_MPH = 2.23694;
+	public static final double METERSSEC_2_KPH = 3.6;
+
 	/**
 	 * Creates a LocationCoordinate based on cursor.
 	 * @param cursor	Assumes a query returning all columns
 	 */
-	public LocationCoordinate(Cursor cursor) {
+	public LocationCoordinate(Cursor cursor, int videoElapsedTime) {
 		id = cursor.getLong(0);
 		fileName = cursor.getString(1);
 		latitude = cursor.getDouble(2);
@@ -33,8 +28,9 @@ public class LocationCoordinate {
 		speed = cursor.getDouble(4);
 		altitude = cursor.getDouble(5);
 		unix_time = cursor.getInt(6);
+		this.videoElapsedTime = videoElapsedTime;
 	}
-	
+
 	public long getId() {
 		return id;
 	}
@@ -85,5 +81,11 @@ public class LocationCoordinate {
 	}
 	public LatLng getLatLng() {
 		return new LatLng(latitude, longitude);
+	}
+	public int getVideoElapsedTime() {
+		return videoElapsedTime;
+	}
+	public void setVideoElapsedTime(int videoElapsedTime) {
+		this.videoElapsedTime = videoElapsedTime;
 	}
 }

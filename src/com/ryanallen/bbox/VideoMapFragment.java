@@ -5,12 +5,11 @@ import java.util.ArrayList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.VideoView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -26,20 +25,12 @@ public class VideoMapFragment extends MapFragment {
 	private ArrayList<LocationCoordinate> locations;
 	private ArrayList<LatLng> latLngPoints = new ArrayList<LatLng>();
 	private Polyline line;
-	private VideoView videoView;
-	
-	public static final double METERSSEC_2_MPH = 2.23694;
-	public static final double METERSSEC_2_KPH = 3.6;
 	
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onViewCreated(view, savedInstanceState);
 		map = getMap();
-	}
-	
-	public void setVideoView(VideoView view) {
-		videoView = view;
 	}
 	
 	public void addPolyline(ArrayList<LocationCoordinate> allPoints) {

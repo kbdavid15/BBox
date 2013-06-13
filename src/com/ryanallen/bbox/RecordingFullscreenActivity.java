@@ -47,8 +47,8 @@ com.google.android.gms.location.LocationListener {
 	private MediaRecorder mMediaRecorder;
 	private SharedPreferences settings;
 	private String videoFilePath = null;
+	private long recordingStartTime;
 	
-
 	private ConnectionResult connectionResult;
 	public static String location_interval;
 	public static int location_update_interval = 0;
@@ -246,6 +246,9 @@ com.google.android.gms.location.LocationListener {
 			try {
 				mMediaRecorder.prepare();
 				mMediaRecorder.start();
+				// set the start time
+				recordingStartTime = System.currentTimeMillis();
+				
 			} catch (IllegalStateException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -360,8 +363,15 @@ com.google.android.gms.location.LocationListener {
 		values.put(MyDbOpenHelper.COLUMN_SPEED, location.getSpeed());
 		values.put(MyDbOpenHelper.COLUMN_ALTITUDE, location.getAltitude());
 		values.put(MyDbOpenHelper.COLUMN_TIMESTAMP, location.getTime());
+		// get the current location of the video recording
+		long duration = System.currentTimeMillis() - recordingStartTime;
 
-		mSQLdb.insert(MyDbOpenHelper.TABLE_NAME, null, values);        
+		long id = mSQLdb.insert(MyDbOpenHelper.TABLE_GPS_LOCATION_NAME, null, values);
+		
+		ContentValues vidValues = new ContentValues();
+		vidValues.put(MyDbOpenHelper.COLUMN_ID, id);
+		vidValues.put(MyDbOpenHelper.COLUMN_VIDEO_ELAPSED, duration);
+		mSQLdb.insert(MyDbOpenHelper.TABLE_VIDEO_LOCATION, null, vidValues);
 	}
 
 	@Override

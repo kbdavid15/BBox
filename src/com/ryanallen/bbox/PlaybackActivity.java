@@ -1,45 +1,49 @@
 package com.ryanallen.bbox;
 
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.MediaController;
+import android.widget.TextView;
 import android.widget.VideoView;
 //import tigerbeer;
-
-
 /**
  *
  */
-public class PlaybackActivity extends Activity {
+public class PlaybackActivity extends Activity implements MediaPlayer.OnCompletionListener {
 
 	private static final String VIDEO_POSITION = "video_position";
 	private String videoPath;
 	private VideoView mVideoView;
+	private TextView speedTextView;
 	private FragmentManager fragmentManager;
 	private VideoMapFragment mapFragment;
-	private ArrayList<LocationCoordinate> allPoints;
-
+	private ArrayList<LocationCoordinate> locationCoordinateList;
 	private MyDbOpenHelper mDbHelper;
-	private SQLiteDatabase db;
-	private String[] allColumns = { MyDbOpenHelper.COLUMN_ID, MyDbOpenHelper.COLUMN_FILENAME, MyDbOpenHelper.COLUMN_LATITUDE,
-			MyDbOpenHelper.COLUMN_LONGITUDE, MyDbOpenHelper.COLUMN_SPEED, MyDbOpenHelper.COLUMN_ALTITUDE, MyDbOpenHelper.COLUMN_TIMESTAMP };
 	private SharedPreferences settings;
 	private boolean show_map;
+	private long playbackStartTime;
+	
+	private Handler mHandler;
 
 	private int videoPosition = 0;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -69,6 +73,7 @@ public class PlaybackActivity extends Activity {
 		setContentView(R.layout.activity_playback);
 		fragmentManager = getFragmentManager();
 		mapFragment = (VideoMapFragment)fragmentManager.findFragmentById(R.id.mapFragment);
+		speedTextView = (TextView)findViewById(R.id.textViewSpeedDisplay);
 		
 		show_map = settings.getBoolean("show_map", true);
 		if (!show_map) {
@@ -79,27 +84,40 @@ public class PlaybackActivity extends Activity {
 		if (extras != null) {
 			videoPath = extras.getString(ReviewFragment.SELECTED_VIDEO_FILE);
 		}
+		
+		// set up handler
+		mHandler = new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+				super.handleMessage(msg);
+				speedTextView.setText((String)msg.obj);
+			}
+		};
 
 		// set up the database helper
 		mDbHelper = new MyDbOpenHelper(this);
 
-		allPoints = getAllPoints();
+		locationCoordinateList = mDbHelper.getAllPointsForFile(videoPath);
 
 		// load the video
 		mVideoView = (VideoView)findViewById(R.id.videoView1);
+		
+		// set completion listener
+		mVideoView.setOnCompletionListener(this);
 		
 		// setup the video
 		mVideoView.setVideoPath(videoPath);
 		mVideoView.setMediaController(new MediaController(this));
 
-		// link the video to the mapfragment
-		mapFragment.setVideoView(mVideoView);
-
 		// start the video 
-		mVideoView.start();
+		mVideoView.start();		
+		playbackStartTime = System.currentTimeMillis();
+		
+		// start the scheduler
+		setupExecutorService();
 
 		// add polyline
-		mapFragment.addPolyline(allPoints);
+		mapFragment.addPolyline(locationCoordinateList);
 	}
 
 	@Override
@@ -118,8 +136,8 @@ public class PlaybackActivity extends Activity {
 	@Override
 	protected void onStop() {
 		super.onStop();
-		if (db != null) {
-			db.close();
+		if (mDbHelper.getDatabase() != null) {
+			mDbHelper.close();
 		}
 	}
 
@@ -130,29 +148,11 @@ public class PlaybackActivity extends Activity {
 		videoPosition = mVideoView.getCurrentPosition();
 	}
 
-	public ArrayList<LocationCoordinate> getAllPoints() {
-		ArrayList<LocationCoordinate> points = new ArrayList<LocationCoordinate>();
-		db = mDbHelper.getReadableDatabase();
-
-		// find the data associated with the chosen video
-		String selectCriteria = MyDbOpenHelper.COLUMN_FILENAME + " = '" + videoPath + "'";
-		Cursor cursor = db.query(MyDbOpenHelper.TABLE_NAME, allColumns, 
-				selectCriteria, null, null, null, null);
-		cursor.moveToFirst();
-		while (!cursor.isAfterLast()) {
-			points.add(new LocationCoordinate(cursor));
-			cursor.moveToNext();
-		}
-		return points;
-	}
-
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
 	}
 	
-	
-
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		outState.putInt(VIDEO_POSITION, videoPosition);
@@ -176,5 +176,40 @@ public class PlaybackActivity extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	/**
+	 * Schedule a callback to run every second while the video is playing
+	 * Update the speed textview and the location on the map
+	 */
+	private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+	private int index = 0;
+	public void setupExecutorService() {
+		final Runnable runner = new Runnable() {
+			long duration;
+			@Override
+			public void run() {
+				// this is called every 1 second, while the video is playing
+				// get the speed that corresponds with the current video time
+				duration = System.currentTimeMillis() - playbackStartTime;
+				int loc = locationCoordinateList.get(index).getVideoElapsedTime();
+				Log.d("Duration", "Getcurrentposition: " + String.valueOf(duration));
+				Log.d("Duration", "Location:  " + String.valueOf(loc));
+				Log.d("Duration", "Index:  " + String.valueOf(index));
+				if (duration > loc) {
+					Message msg = new Message();
+					msg.obj = String.format("%.1f", locationCoordinateList.get(index).getSpeed() * LocationCoordinate.METERSSEC_2_MPH);
+					mHandler.sendMessage(msg);
+					index++;
+				}
+			}
+		};
+		scheduler.scheduleAtFixedRate(runner, 0, 100, TimeUnit.MILLISECONDS);
+	}
+
+	@Override
+	public void onCompletion(MediaPlayer player) {
+		// TODO Auto-generated method stub
+		scheduler.shutdown();
 	}
 }
