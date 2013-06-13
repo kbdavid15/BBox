@@ -11,6 +11,7 @@ import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.hardware.Camera;
+import android.hardware.Camera.Parameters;
 import android.location.Location;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
@@ -19,12 +20,9 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.Surface;
+import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -38,20 +36,23 @@ import com.google.android.gms.location.LocationRequest;
  * 
  * @see SystemUiHider
  */
-public class RecordingFullscreenActivity extends Activity implements GooglePlayServicesClient.ConnectionCallbacks, 
+public class RecordingFullscreenActivity extends Activity implements 
+SurfaceHolder.Callback, 
+GooglePlayServicesClient.ConnectionCallbacks, 
 GooglePlayServicesClient.OnConnectionFailedListener,
 com.google.android.gms.location.LocationListener {
-	private Camera myCamera;
-	private CameraPreview mPreview;
-	private FrameLayout mFrameLayoutPreview;
-	private MediaRecorder mMediaRecorder;
+	private Camera mCamera;
+	private SurfaceHolder surfaceHolder;
+	private SurfaceView surfaceView;
+	public MediaRecorder mRecorder = new MediaRecorder();
+
 	private SharedPreferences settings;
+
 	private String videoFilePath = null;
 	private long recordingStartTime;
-	
+
 	private ConnectionResult connectionResult;
-	public static String location_interval;
-	public static int location_update_interval = 0;
+	private int location_update_interval = 0;
 	// The fastest update frequency, in milliseconds
 	private static final int FASTEST_INTERVAL = 1000;
 	// Define an object that holds accuracy and frequency parameters
@@ -62,16 +63,22 @@ com.google.android.gms.location.LocationListener {
 	private MyDbOpenHelper mDbHelper;
 	private SQLiteDatabase mSQLdb;
 
-	String quality;
-	Surface prevSurface = null;
-	
 	public final int VIDEO_LENGTH_MILLIS = 30000;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		setContentView(R.layout.activity_recording_fullscreen);
+
+		// get UI element
+		surfaceView = (SurfaceView)findViewById(R.id.surface_camera);
+		mCamera = Camera.open();
+
+		surfaceHolder = surfaceView.getHolder();
+		surfaceHolder.addCallback(this);
+
+		surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+
 		// restore prefs
 		settings = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -81,7 +88,7 @@ com.google.android.gms.location.LocationListener {
 		mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
 		// Set the update interval with the options menu item
-		location_interval = settings.getString("location_update_freq", "1000");
+		String location_interval = settings.getString("location_update_freq", "1000");
 		location_update_interval = Integer.parseInt(location_interval);
 		mLocationRequest.setInterval(location_update_interval);
 
@@ -94,104 +101,92 @@ com.google.android.gms.location.LocationListener {
 		mDbHelper = new MyDbOpenHelper(this);
 	}
 
-	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-		super.onPostCreate(savedInstanceState);
-	}
+//	@Override
+//	public void onResume() {
+//		super.onResume();
+//
+//		// Get the Camera instance as the activity achieves full user focus
+//		if (myCamera == null) {
+//			initializeCamera(); // Local method to handle camera init
+//		}
+//		//TODO look into why the integer array of values didn't work
+//		String quality = settings.getString("video_quality", String.valueOf(CamcorderProfile.QUALITY_HIGH));
+//		CamcorderProfile profile = CamcorderProfile.get(Integer.parseInt(quality));
+//
+//		//set camera params - doesn't really seem to help much
+//		Camera.Parameters params = myCamera.getParameters();
+//		params.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
+//		myCamera.setParameters(params);
+//
+//	}
 
-	@Override
-	public void onResume() {
-		super.onResume();
-
-		// Get the Camera instance as the activity achieves full user focus
-		if (myCamera == null) {
-			initializeCamera(); // Local method to handle camera init
-		}
-		//TODO look into why the integer array of values didn't work
-		String quality = settings.getString("video_quality", String.valueOf(CamcorderProfile.QUALITY_HIGH));
-		CamcorderProfile profile = CamcorderProfile.get(Integer.parseInt(quality));
-
-		//set camera params - doesn't really seem to help much
-		Camera.Parameters params = myCamera.getParameters();
-		params.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
-		myCamera.setParameters(params);
-
-	}
-	
 	public void prepareAndStartRecording() {
-		// start recording
-		mMediaRecorder = new MediaRecorder();
-		myCamera.unlock();
-		mMediaRecorder.setCamera(myCamera);
-		mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
-		mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+		if (mCamera == null) {
+			mCamera = Camera.open();
+		}
+		videoFilePath = Media.getOutputMediaFile(Media.MEDIA_TYPE_VIDEO).toString();
+
+		mRecorder = new MediaRecorder();
+
+		mCamera.lock();
+		mCamera.unlock();
+
+		mRecorder.setCamera(mCamera);
+		mRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+		mRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
+
 		// set the recording quality based on the settings in options menu
 		try {
 			//TODO look into why the integer array of values didn't work
-			quality = settings.getString("video_quality", String.valueOf(CamcorderProfile.QUALITY_LOW));
-			mMediaRecorder.setProfile(CamcorderProfile.get(Integer.parseInt(quality)));
-			//Toast.makeText(this, "Recording quality: " + quality, Toast.LENGTH_SHORT).show();
+			String quality = settings.getString("video_quality", String.valueOf(CamcorderProfile.QUALITY_LOW));
+			mRecorder.setProfile(CamcorderProfile.get(Integer.parseInt(quality)));
 		} catch (RuntimeException e) {
 			// the selected quality is not available
-			//Toast.makeText(this, "The selected video quality is not available.", Toast.LENGTH_SHORT).show();
-			mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_LOW));
+			mRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_LOW));
 		}
-		videoFilePath = Media.getOutputMediaFile(Media.MEDIA_TYPE_VIDEO).toString();
-		mMediaRecorder.setOutputFile(videoFilePath);
-		prevSurface = mPreview.getHolder().getSurface();
-		mMediaRecorder.setPreviewDisplay(prevSurface);
-		mMediaRecorder.setMaxDuration(VIDEO_LENGTH_MILLIS);
-		mMediaRecorder.setOnInfoListener(stopListener);
+
+		mRecorder.setPreviewDisplay(surfaceHolder.getSurface());
+		mRecorder.setOutputFile(videoFilePath);
+		mRecorder.setMaxDuration(VIDEO_LENGTH_MILLIS);
+		mRecorder.setOnInfoListener(stopListener);
 
 		// prepare the media recorder
 		try {
-			mMediaRecorder.prepare();
-			mMediaRecorder.start();
+			mRecorder.prepare();
+			mRecorder.start();
 		} catch (IllegalStateException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	private MediaRecorder.OnInfoListener stopListener = new MediaRecorder.OnInfoListener(){
-
 		@Override
 		public void onInfo(MediaRecorder mr, int what, int extra) {
-			switch(what){
-			case(MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED):
-				mMediaRecorder.stop();
-				mMediaRecorder.reset();
+			switch (what) {
+			case (MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED):
+				mr.stop();
+				mr.release();
 				prepareAndStartRecording();
 				break;
 			}
 		}
-		
 	};
-	
+
 	@Override
 	protected void onStart() {
 		super.onStart();
 		mLocationClient.connect();
-
-
 	}
 
-	private boolean initializeCamera() {
-		// create an instance of camera
-		myCamera = getCameraInstance();
-
-		if (myCamera == null) return false;
-
-		if (mPreview == null) {
-			mPreview = new CameraPreview(this, myCamera);
-			mPreview.setKeepScreenOn(true);
-			mFrameLayoutPreview = (FrameLayout)findViewById(R.id.test);
-			mFrameLayoutPreview.addView(mPreview,mFrameLayoutPreview.getChildCount()-1);
+	protected void stopRecording() {
+		if(mRecorder != null) {
+			mRecorder.stop();
+			mRecorder.release();
+			mCamera.release();
+			mCamera.lock();
 		}
-		return true;
 	}
 
 	@Override
@@ -199,13 +194,12 @@ com.google.android.gms.location.LocationListener {
 		super.onPause();  // Always call the superclass method first
 
 		// if video is recording, stop it
-		if (mMediaRecorder != null) {
+		if (mRecorder != null) {
 			try {
 				//stop recording
-				mMediaRecorder.stop();
-				mMediaRecorder.reset();
-				mMediaRecorder.release();
-				myCamera.lock();	
+				mRecorder.stop();
+				mRecorder.release();
+				mRecorder = null;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -213,69 +207,41 @@ com.google.android.gms.location.LocationListener {
 
 		// Release the Camera because we don't need it when paused
 		// and other activities might need to use it.
-		if (myCamera != null) {
-			myCamera.release();
-			myCamera = null;
+		if (mCamera != null) {
+			mCamera.release();
+			mCamera = null;
 		}
 	}
+	
+	@Override
+	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+		
+	}
 
-/*	public void captureButton_Click(View v) {
-		if (((ToggleButton)v).isChecked()) {	    	
-			// start recording
-			mMediaRecorder = new MediaRecorder();
-			myCamera.unlock();
-			mMediaRecorder.setCamera(myCamera);
-			mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
-			mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-			// set the recording quality based on the settings in options menu
-			try {
-				//TODO look into why the integer array of values didn't work
-				quality = settings.getString("video_quality", String.valueOf(CamcorderProfile.QUALITY_LOW));
-				mMediaRecorder.setProfile(CamcorderProfile.get(Integer.parseInt(quality)));
-				//Toast.makeText(this, "Recording quality: " + quality, Toast.LENGTH_SHORT).show();
-			} catch (RuntimeException e) {
-				// the selected quality is not available
-				//Toast.makeText(this, "The selected video quality is not available.", Toast.LENGTH_SHORT).show();
-				mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_LOW));
-			}
-			videoFilePath = Media.getOutputMediaFile(Media.MEDIA_TYPE_VIDEO).toString();
-			mMediaRecorder.setOutputFile(videoFilePath);
-			mMediaRecorder.setPreviewDisplay(mPreview.getHolder().getSurface());
-
-			// prepare the media recorder
-			try {
-				mMediaRecorder.prepare();
-				mMediaRecorder.start();
-				// set the start time
-				recordingStartTime = System.currentTimeMillis();
-				
-			} catch (IllegalStateException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	@Override
+	public void surfaceCreated(SurfaceHolder holder) {
+		if (mCamera != null) {
+			String quality = settings.getString("video_quality", String.valueOf(CamcorderProfile.QUALITY_HIGH));
+			CamcorderProfile profile = CamcorderProfile.get(Integer.parseInt(quality));
+			Parameters params = mCamera.getParameters();
+			params.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
+			mCamera.setParameters(params);
+			
+			prepareAndStartRecording();
 		} else {
-			// stop recording
-			mMediaRecorder.stop();
-			mMediaRecorder.reset();
-			mMediaRecorder.release();
-			myCamera.lock();	    	
+			Toast.makeText(getApplicationContext(), "Camera not available!",
+                    Toast.LENGTH_LONG).show();
+			finish();
 		}
 	}
-*/
 
-	/** A safe way to get an instance of the Camera object. */
-	public static Camera getCameraInstance() {
-		Camera c = null;
-		try {
-			c = Camera.open(); // attempt to get a Camera instance
+	@Override
+	public void surfaceDestroyed(SurfaceHolder holder) {
+		if (mCamera != null) {
+			mCamera.stopPreview();
+			mCamera.release();
+			mCamera = null;
 		}
-		catch (Exception e){
-			// Camera is not available (in use or does not exist)
-		}
-		return c; // returns null if camera is unavailable
 	}
 
 	@Override
@@ -367,7 +333,7 @@ com.google.android.gms.location.LocationListener {
 		long duration = System.currentTimeMillis() - recordingStartTime;
 
 		long id = mSQLdb.insert(MyDbOpenHelper.TABLE_GPS_LOCATION_NAME, null, values);
-		
+
 		ContentValues vidValues = new ContentValues();
 		vidValues.put(MyDbOpenHelper.COLUMN_ID, id);
 		vidValues.put(MyDbOpenHelper.COLUMN_VIDEO_ELAPSED, duration);
