@@ -16,7 +16,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        style="@style/VideoFileInfoOverlayText" 
-        android:text="23" />
+        style="@style/VideoFileInfoOverlayText"/>
 
 </RelativeLayout>

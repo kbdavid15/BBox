@@ -10,6 +10,7 @@ import com.google.android.gms.maps.model.LatLng;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -56,6 +57,7 @@ public class PlaybackActivity extends Activity implements MediaPlayer.OnCompleti
 		}
 		// check the orientation
 		settings = PreferenceManager.getDefaultSharedPreferences(this);
+		show_map = settings.getBoolean("show_map", true);
 		Configuration config = getResources().getConfiguration();
 		WindowManager.LayoutParams attrs = getWindow().getAttributes();
 		switch (config.orientation) {
@@ -76,10 +78,11 @@ public class PlaybackActivity extends Activity implements MediaPlayer.OnCompleti
 		mapFragment = (VideoMapFragment)fragmentManager.findFragmentById(R.id.mapFragment);
 		speedTextView = (TextView)findViewById(R.id.textViewSpeedDisplay);
 		
-		show_map = settings.getBoolean("show_map", true);
 		if (!show_map) {
 			mapFragment.getView().setVisibility(View.GONE);
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		}
+		
 		// get the values from the parent activity
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
@@ -144,7 +147,7 @@ public class PlaybackActivity extends Activity implements MediaPlayer.OnCompleti
 		if (mDbHelper.getDatabase() != null) {
 			mDbHelper.close();
 		}
-		scheduler.shutdown();
+		scheduler.shutdownNow();
 	}
 
 	@Override
@@ -152,7 +155,7 @@ public class PlaybackActivity extends Activity implements MediaPlayer.OnCompleti
 		super.onPause();
 		// save the current position of the video
 		videoPosition = mVideoView.getCurrentPosition();
-		scheduler.shutdown();
+		scheduler.shutdownNow();
 	}
 	
 	@Override
@@ -211,7 +214,7 @@ public class PlaybackActivity extends Activity implements MediaPlayer.OnCompleti
 				}
 			}
 		};
-		scheduler.scheduleAtFixedRate(runner, 0, 1000, TimeUnit.MILLISECONDS);
+		scheduler.scheduleAtFixedRate(runner, 0, 1500, TimeUnit.MILLISECONDS);
 	}
 
 	@Override
